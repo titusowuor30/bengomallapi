@@ -5,9 +5,9 @@ from django.core.validators import MinLengthValidator
 # Create your models here.
 
 class EmailConfig(models.Model):
-    from_email = models.EmailField(max_length=100)
+    from_email = models.EmailField(max_length=100,default="bengomallKE@gmail.com")
     email_password = models.CharField(
-        max_length=128, validators=[MinLengthValidator(8)])
+        max_length=128, validators=[MinLengthValidator(8)],default="waxaaaofvxgifsyt")
     email_host = models.CharField(max_length=50, default="smtp.gmail.com")
     email_port = models.CharField(max_length=5, default=587)
     use_tls = models.BooleanField(default=True)
