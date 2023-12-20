@@ -1,7 +1,9 @@
 from django.db import models
 from datetime import datetime
 from django.core.validators import MinLengthValidator
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 # Create your models here.
 
 class EmailConfig(models.Model):
@@ -38,7 +40,12 @@ class FrontStore(models.Model):
         verbose_name_plural = 'Front Store Settings'
 
 class Blog(models.Model):
-    title=models.CharField(max_length=255)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='blogs',null=True)
+    title = models.CharField(
+        max_length=255, default="Yuletide Zen: Finding Balance in Festivity")
+    featured_image = models.ImageField(upload_to='Blog/featured', null=True)
+    excerpt = models.TextField(default="Dive into the season of joy and mindfulness with Yogi's Delight! Explore our guide on maintaining serenity amidst the festive bustle. From calming yoga routines to mindful gift-giving, discover how you can infuse your holidays with peace and positivity.")
     date_created=models.DateTimeField(default=datetime.now())
     published=models.BooleanField(default=False)
 
@@ -53,9 +60,8 @@ class Blog(models.Model):
 class Post(models.Model):
     blog=models.ForeignKey(Blog,on_delete=models.CASCADE,related_name='posts')
     title=models.CharField(max_length=255)
-    image=models.ImageField(upload_to='Blog')
-    date_created=models.DateTimeField(default=datetime.now())
-    published=models.BooleanField(default=False)
+    content=models.TextField(default='Yogis official store')
+    image=models.ImageField(upload_to='Blog/posts')
 
     def __str__(self):
         return self.title
@@ -64,3 +70,16 @@ class Post(models.Model):
         db_table = 'blog_posts'
         verbose_name = 'Blog Post'
         verbose_name_plural = 'Blog Posts'
+
+class Comments(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='comments')
+    post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')
+    comment=models.TextField()
+
+    def __str__(self):
+        return self.user.email
+
+    class Meta:
+        db_table = 'post_comments'
+        verbose_name = 'Post Comment'
+        verbose_name_plural = 'Post Comments'

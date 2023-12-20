@@ -18,11 +18,11 @@ class BlogPostInline(admin.TabularInline):
 
 class BlogAdmin(admin.ModelAdmin):
     inlines=[BlogPostInline]
-    list_display = ('title', 'date_created', 'published',)
-    list_filter = ('title', 'date_created', 'published',)
-    search_fields = ('title', 'date_created', 'published',)
-    list_editable = ('title', 'published',)
+    list_display = ('date_created','author','title', 'published',)
+    list_filter = ('date_created', 'author', 'title', 'published',)
+    search_fields = ('title', 'author', 'date_created', 'published',)
+    list_editable = ('title', 'author', 'published',)
     list_display_links = ['date_created']
-admin.site.register(Post)
+admin.site.register([Post,Comments])
 admin.site.register(Blog,BlogAdmin)
 admin.site.register(EmailConfig)

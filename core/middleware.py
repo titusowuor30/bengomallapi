@@ -2,12 +2,14 @@ from django.utils import timezone
 import json
 import os
 from django.http import HttpRequest
+from django.contrib.sites.models import Site
 
 class CoreMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
+        _,_=Site.objects.get_or_create(domain='https://www.yogisdelight.co.ke/login/',name='yogis main')
         request_data = {
         'HTTP_HOST':request.META.get('HTTP_HOST', 'localhost:8000'),
         'HTTP_X_FORWARDED_PROTO':request.META.get('HTTP_X_FORWARDED_PROTO', 'http'),

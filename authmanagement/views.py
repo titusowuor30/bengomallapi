@@ -24,12 +24,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import status
 from rest_framework.response import Response
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.mail.backends.smtp import EmailBackend
 from django.core.mail import EmailMessage
 from django.http import Http404
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

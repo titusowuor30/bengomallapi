@@ -13,3 +13,10 @@ class FrontStoreViewSet(viewsets.ModelViewSet):
     authentication_classes = []
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = LimitOffsetPagination  # Use the custom pagination class
+
+class BlogViewSet(viewsets.ModelViewSet):
+    queryset = Blog.objects.all().order_by('-date_created')
+    serializer_class = BlogSerializer
+    authentication_classes = []
+    permission_classes = []
+    pagination_class = LimitOffsetPagination  # Use the custom pagination class

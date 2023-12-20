@@ -5,6 +5,8 @@ from .views import *
 
 router = routers.DefaultRouter()
 router.register('store', FrontStoreViewSet)
+router.register('blog', BlogViewSet)
+
 
 urlpatterns = [
 path('', include(router.urls)),

@@ -62,7 +62,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'authmanagement.MyUser'
-
+SITE_ID = 1  # Replace with the ID of your site
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
