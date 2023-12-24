@@ -19,19 +19,27 @@
 CREATE DATABASE IF NOT EXISTS `bengomall` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `bengomall`;
 
--- Dumping structure for table bengomall.authmanagement_emailconfig
-CREATE TABLE IF NOT EXISTS `authmanagement_emailconfig` (
+-- Dumping structure for table bengomall.address_book
+CREATE TABLE IF NOT EXISTS `address_book` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `from_email` varchar(100) NOT NULL,
-  `email_password` varchar(128) NOT NULL,
-  `email_host` varchar(50) NOT NULL,
-  `email_port` varchar(5) NOT NULL,
-  `use_tls` tinyint(1) NOT NULL,
-  `fail_silently` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
+  `address_label` varchar(255) NOT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `other_phone` varchar(15) DEFAULT NULL,
+  `postal_code` varchar(100) DEFAULT NULL,
+  `default_address` tinyint(1) NOT NULL,
+  `city_id` bigint NOT NULL,
+  `customer_id` bigint DEFAULT NULL,
+  `region_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `address_book_city_id_c2d42364_fk_pickup_stattions_id` (`city_id`),
+  KEY `address_book_customer_id_a9c8c0fa_fk_customers_id` (`customer_id`),
+  KEY `address_book_region_id_a284c127_fk_delivery_regions_id` (`region_id`),
+  CONSTRAINT `address_book_city_id_c2d42364_fk_pickup_stattions_id` FOREIGN KEY (`city_id`) REFERENCES `pickup_stattions` (`id`),
+  CONSTRAINT `address_book_customer_id_a9c8c0fa_fk_customers_id` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
+  CONSTRAINT `address_book_region_id_a284c127_fk_delivery_regions_id` FOREIGN KEY (`region_id`) REFERENCES `delivery_regions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.authmanagement_emailconfig: ~0 rows (approximately)
+-- Dumping data for table bengomall.address_book: ~0 rows (approximately)
 
 -- Dumping structure for table bengomall.authmanagement_myuser
 CREATE TABLE IF NOT EXISTS `authmanagement_myuser` (
@@ -52,17 +60,19 @@ CREATE TABLE IF NOT EXISTS `authmanagement_myuser` (
   `ip_address` varchar(100) NOT NULL,
   `device` varchar(100) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
+  `email_confirm_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.authmanagement_myuser: ~3 rows (approximately)
-INSERT IGNORE INTO `authmanagement_myuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `is_staff`, `date_joined`, `email`, `phone`, `gender`, `pic`, `organisation`, `ip_address`, `device`, `is_active`) VALUES
-	(13, 'pbkdf2_sha256$600000$Di6nNCE3S8rHSlTX4vBcBq$p5jYQrc71LeMyDFLrTRuYPmIRySgYmzQEpLUn6t3es4=', '2023-11-27 21:30:05.604362', 1, 'admin', 'bengo', 'hub', 1, '2023-11-02 15:53:22.915708', 'admin@bengohub.co.ke', '+254743793901', 'Other', '', 'TDBSoft', '192.168.0.1', 'Phone', 1),
-	(15, 'pbkdf2_sha256$600000$bg51os1V0HLTeCMNystXP9$A7x8pxIdYUvRI1qj3sHIaS9iRuSmLFCTvk3WYIMSGY4=', '2023-11-27 21:29:39.525434', 0, 'johndoe', 'John', 'Doe', 0, '2023-11-02 15:59:40.138928', 'johndoe@user.com', '+254743793901', 'Male', 'user/profile/images/avatar-3_0xYWLpr.jpg', 'TDBSoft', '192.168.0.1', 'Phone', 1),
-	(16, 'pbkdf2_sha256$600000$oM3U4yOYf3EwBJB6jaXSQy$jSC5QzYh/ar/BG2YeWhYDWhdtJQDJkktk423LmZzaIU=', NULL, 0, 'supplier1', 'supp', 'lier', 0, '2023-11-04 06:01:24.887546', 'sup@gmail.com', '+254743793901', 'Male', '', 'TDBSoft', '192.168.0.1', 'Phone', 1),
-	(17, 'pbkdf2_sha256$600000$ioRdHIpgsuKuDNG1FLi1Dp$hGhGZor02Slong87eb6r1oxzxyNWKhTP+StI6KLqwLg=', NULL, 0, 'janedoe', 'Jane', 'Doe', 1, '2023-11-21 15:33:32.119908', 'janedoe@user.com', '+254743793907', 'Female', 'user/profile/images/Bites_1.jpg', 'TDBSoft', '192.168.0.1', 'Phone', 1);
+-- Dumping data for table bengomall.authmanagement_myuser: ~5 rows (approximately)
+INSERT IGNORE INTO `authmanagement_myuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `is_staff`, `date_joined`, `email`, `phone`, `gender`, `pic`, `organisation`, `ip_address`, `device`, `is_active`, `email_confirm_token`) VALUES
+	(13, 'pbkdf2_sha256$600000$WZjEdLBTqTUBILJOluYzOM$OzTWfcrFXdbEmC2RFr/cF4lOdNFO/R7d7V1MKkBbUlM=', '2023-12-19 18:44:55.299434', 1, 'admin', 'bengo', 'hub', 1, '2023-11-02 15:53:22.915708', 'admin@bengohub.co.ke', '+254743793901', 'Other', '', 'TDBSoft', '192.168.0.1', 'Phone', 1, NULL),
+	(15, 'pbkdf2_sha256$600000$bg51os1V0HLTeCMNystXP9$A7x8pxIdYUvRI1qj3sHIaS9iRuSmLFCTvk3WYIMSGY4=', '2023-11-27 21:29:39.525434', 0, 'johndoe', 'John', 'Doe', 0, '2023-11-02 15:59:40.138928', 'johndoe@user.com', '+254743793901', 'Male', 'user/profile/images/avatar-3_0xYWLpr.jpg', 'TDBSoft', '192.168.0.1', 'Phone', 1, NULL),
+	(16, 'pbkdf2_sha256$600000$oM3U4yOYf3EwBJB6jaXSQy$jSC5QzYh/ar/BG2YeWhYDWhdtJQDJkktk423LmZzaIU=', NULL, 0, 'supplier1', 'supp', 'lier', 0, '2023-11-04 06:01:24.887546', 'sup@gmail.com', '+254743793901', 'Male', '', 'TDBSoft', '192.168.0.1', 'Phone', 1, NULL),
+	(17, 'pbkdf2_sha256$600000$ioRdHIpgsuKuDNG1FLi1Dp$hGhGZor02Slong87eb6r1oxzxyNWKhTP+StI6KLqwLg=', NULL, 0, 'janedoe', 'Jane', 'Doe', 1, '2023-11-21 15:33:32.119908', 'janedoe@user.com', '+254743793907', 'Female', 'user/profile/images/Bites_1.jpg', 'TDBSoft', '192.168.0.1', 'Phone', 1, NULL),
+	(36, 'pbkdf2_sha256$600000$VcV99cvs3Rfe2euHjT6w5x$z8UpjTWkmufFSqw+fFovVxaAAZcdNR1QERCwII8ILDs=', '2023-12-19 19:00:13.270561', 0, 'testuser', 'test', 'lier', 0, '2023-12-18 19:52:26.443567', 'titusowuor30@gmail.com', '+254743793901', 'Other', 'user/default.png', 'Bengo Mall', '192.168.0.1', 'Phone', 1, 'bzf5ve-b7410b7b15ba672934cc2b1c500f2f6c');
 
 -- Dumping structure for table bengomall.authmanagement_myuser_groups
 CREATE TABLE IF NOT EXISTS `authmanagement_myuser_groups` (
@@ -74,12 +84,13 @@ CREATE TABLE IF NOT EXISTS `authmanagement_myuser_groups` (
   KEY `authmanagement_myuser_groups_group_id_88654dfc_fk_auth_group_id` (`group_id`),
   CONSTRAINT `authmanagement_myuse_myuser_id_dbbb177a_fk_authmanag` FOREIGN KEY (`myuser_id`) REFERENCES `authmanagement_myuser` (`id`),
   CONSTRAINT `authmanagement_myuser_groups_group_id_88654dfc_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.authmanagement_myuser_groups: ~2 rows (approximately)
+-- Dumping data for table bengomall.authmanagement_myuser_groups: ~3 rows (approximately)
 INSERT IGNORE INTO `authmanagement_myuser_groups` (`id`, `myuser_id`, `group_id`) VALUES
 	(7, 13, 1),
-	(8, 15, 5);
+	(8, 15, 5),
+	(27, 36, 5);
 
 -- Dumping structure for table bengomall.authmanagement_myuser_user_permissions
 CREATE TABLE IF NOT EXISTS `authmanagement_myuser_user_permissions` (
@@ -105,8 +116,9 @@ CREATE TABLE IF NOT EXISTS `authtoken_token` (
   CONSTRAINT `authtoken_token_user_id_35299eff_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.authtoken_token: ~2 rows (approximately)
+-- Dumping data for table bengomall.authtoken_token: ~3 rows (approximately)
 INSERT IGNORE INTO `authtoken_token` (`key`, `created`, `user_id`) VALUES
+	('2a49ab85cda508ce0087adb30e5b705dab6f9c2a', '2023-12-18 19:52:26.912505', 36),
 	('69eb8b990742301655123a1f9a88bd6311c423a5', '2023-11-02 16:00:05.301753', 13),
 	('c4c077860dbce97cc4f9f5dda918b537248004ca', '2023-11-02 16:10:55.110045', 15);
 
@@ -118,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `auth_group` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.auth_group: ~5 rows (approximately)
+-- Dumping data for table bengomall.auth_group: ~6 rows (approximately)
 INSERT IGNORE INTO `auth_group` (`id`, `name`) VALUES
 	(1, 'admin'),
 	(5, 'customer'),
@@ -150,9 +162,9 @@ CREATE TABLE IF NOT EXISTS `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
   CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=165 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=305 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.auth_permission: ~152 rows (approximately)
+-- Dumping data for table bengomall.auth_permission: ~304 rows (approximately)
 INSERT IGNORE INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALUES
 	(1, 'Can add log entry', 1, 'add_logentry'),
 	(2, 'Can change log entry', 1, 'change_logentry'),
@@ -174,172 +186,364 @@ INSERT IGNORE INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename
 	(18, 'Can change session', 5, 'change_session'),
 	(19, 'Can delete session', 5, 'delete_session'),
 	(20, 'Can view session', 5, 'view_session'),
-	(21, 'Can add email config', 6, 'add_emailconfig'),
-	(22, 'Can change email config', 6, 'change_emailconfig'),
-	(23, 'Can delete email config', 6, 'delete_emailconfig'),
-	(24, 'Can view email config', 6, 'view_emailconfig'),
-	(25, 'Can add user', 7, 'add_myuser'),
-	(26, 'Can change user', 7, 'change_myuser'),
-	(27, 'Can delete user', 7, 'delete_myuser'),
-	(28, 'Can view user', 7, 'view_myuser'),
-	(29, 'Can add Cart', 8, 'add_cart'),
-	(30, 'Can change Cart', 8, 'change_cart'),
-	(31, 'Can delete Cart', 8, 'delete_cart'),
-	(32, 'Can view Cart', 8, 'view_cart'),
-	(33, 'Can add Token', 9, 'add_token'),
-	(34, 'Can change Token', 9, 'change_token'),
-	(35, 'Can delete Token', 9, 'delete_token'),
-	(36, 'Can view Token', 9, 'view_token'),
-	(37, 'Can add token', 10, 'add_tokenproxy'),
-	(38, 'Can change token', 10, 'change_tokenproxy'),
-	(39, 'Can delete token', 10, 'delete_tokenproxy'),
-	(40, 'Can view token', 10, 'view_tokenproxy'),
-	(41, 'Can add business address', 11, 'add_businessaddress'),
-	(42, 'Can change business address', 11, 'change_businessaddress'),
-	(43, 'Can delete business address', 11, 'delete_businessaddress'),
-	(44, 'Can view business address', 11, 'view_businessaddress'),
-	(45, 'Can add delivery regions', 12, 'add_deliveryregions'),
-	(46, 'Can change delivery regions', 12, 'change_deliveryregions'),
-	(47, 'Can delete delivery regions', 12, 'delete_deliveryregions'),
-	(48, 'Can view delivery regions', 12, 'view_deliveryregions'),
-	(49, 'Can add supplier', 13, 'add_supplier'),
-	(50, 'Can change supplier', 13, 'change_supplier'),
-	(51, 'Can delete supplier', 13, 'delete_supplier'),
-	(52, 'Can view supplier', 13, 'view_supplier'),
-	(53, 'Can add pickup stations', 14, 'add_pickupstations'),
-	(54, 'Can change pickup stations', 14, 'change_pickupstations'),
-	(55, 'Can delete pickup stations', 14, 'delete_pickupstations'),
-	(56, 'Can view pickup stations', 14, 'view_pickupstations'),
-	(57, 'Can add employee', 15, 'add_employee'),
-	(58, 'Can change employee', 15, 'change_employee'),
-	(59, 'Can delete employee', 15, 'delete_employee'),
-	(60, 'Can view employee', 15, 'view_employee'),
-	(61, 'Can add customer', 16, 'add_customer'),
-	(62, 'Can change customer', 16, 'change_customer'),
-	(63, 'Can delete customer', 16, 'delete_customer'),
-	(64, 'Can view customer', 16, 'view_customer'),
-	(65, 'Can add address book', 17, 'add_addressbook'),
-	(66, 'Can change address book', 17, 'change_addressbook'),
-	(67, 'Can delete address book', 17, 'delete_addressbook'),
-	(68, 'Can view address book', 17, 'view_addressbook'),
-	(69, 'Can add transactions', 18, 'add_transactions'),
-	(70, 'Can change transactions', 18, 'change_transactions'),
-	(71, 'Can delete transactions', 18, 'delete_transactions'),
-	(72, 'Can view transactions', 18, 'view_transactions'),
-	(73, 'Can add Sales', 19, 'add_sales'),
-	(74, 'Can change Sales', 19, 'change_sales'),
-	(75, 'Can delete Sales', 19, 'delete_sales'),
-	(76, 'Can view Sales', 19, 'view_sales'),
-	(77, 'Can add unit', 20, 'add_unit'),
-	(78, 'Can change unit', 20, 'change_unit'),
-	(79, 'Can delete unit', 20, 'delete_unit'),
-	(80, 'Can view unit', 20, 'view_unit'),
-	(81, 'Can add Special Offer', 21, 'add_specialoffers'),
-	(82, 'Can change Special Offer', 21, 'change_specialoffers'),
-	(83, 'Can delete Special Offer', 21, 'delete_specialoffers'),
-	(84, 'Can view Special Offer', 21, 'view_specialoffers'),
-	(85, 'Can add Sales Items', 22, 'add_salesitems'),
-	(86, 'Can change Sales Items', 22, 'change_salesitems'),
-	(87, 'Can delete Sales Items', 22, 'delete_salesitems'),
-	(88, 'Can view Sales Items', 22, 'view_salesitems'),
-	(89, 'Can add category', 23, 'add_category'),
-	(90, 'Can change category', 23, 'change_category'),
-	(91, 'Can delete category', 23, 'delete_category'),
-	(92, 'Can view category', 23, 'view_category'),
-	(93, 'Can add main category', 24, 'add_maincategory'),
-	(94, 'Can change main category', 24, 'change_maincategory'),
-	(95, 'Can delete main category', 24, 'delete_maincategory'),
-	(96, 'Can view main category', 24, 'view_maincategory'),
-	(97, 'Can add Products', 25, 'add_products'),
-	(98, 'Can change Products', 25, 'change_products'),
-	(99, 'Can delete Products', 25, 'delete_products'),
-	(100, 'Can view Products', 25, 'view_products'),
-	(101, 'Can add subcategory', 26, 'add_subcategory'),
-	(102, 'Can change subcategory', 26, 'change_subcategory'),
-	(103, 'Can delete subcategory', 26, 'delete_subcategory'),
-	(104, 'Can view subcategory', 26, 'view_subcategory'),
-	(105, 'Can add unit', 27, 'add_unit'),
-	(106, 'Can change unit', 27, 'change_unit'),
-	(107, 'Can delete unit', 27, 'delete_unit'),
-	(108, 'Can view unit', 27, 'view_unit'),
-	(109, 'Can add review', 28, 'add_review'),
-	(110, 'Can change review', 28, 'change_review'),
-	(111, 'Can delete review', 28, 'delete_review'),
-	(112, 'Can view review', 28, 'view_review'),
-	(113, 'Can add Size Variation', 29, 'add_productsize'),
-	(114, 'Can change Size Variation', 29, 'change_productsize'),
-	(115, 'Can delete Size Variation', 29, 'delete_productsize'),
-	(116, 'Can view Size Variation', 29, 'view_productsize'),
-	(117, 'Can add product images', 30, 'add_productimages'),
-	(118, 'Can change product images', 30, 'change_productimages'),
-	(119, 'Can delete product images', 30, 'delete_productimages'),
-	(120, 'Can view product images', 30, 'view_productimages'),
-	(121, 'Can add Color Variation', 31, 'add_productcolor'),
-	(122, 'Can change Color Variation', 31, 'change_productcolor'),
-	(123, 'Can delete Color Variation', 31, 'delete_productcolor'),
-	(124, 'Can view Color Variation', 31, 'view_productcolor'),
-	(125, 'Can add Favourites', 32, 'add_favourites'),
-	(126, 'Can change Favourites', 32, 'change_favourites'),
-	(127, 'Can delete Favourites', 32, 'delete_favourites'),
-	(128, 'Can view Favourites', 32, 'view_favourites'),
-	(129, 'Can add order', 33, 'add_order'),
-	(130, 'Can change order', 33, 'change_order'),
-	(131, 'Can delete order', 33, 'delete_order'),
-	(132, 'Can view order', 33, 'view_order'),
-	(133, 'Can add order item', 34, 'add_orderitem'),
-	(134, 'Can change order item', 34, 'change_orderitem'),
-	(135, 'Can delete order item', 34, 'delete_orderitem'),
-	(136, 'Can view order item', 34, 'view_orderitem'),
-	(137, 'Can add invoice', 35, 'add_invoice'),
-	(138, 'Can change invoice', 35, 'change_invoice'),
-	(139, 'Can delete invoice', 35, 'delete_invoice'),
-	(140, 'Can view invoice', 35, 'view_invoice'),
-	(141, 'Can add Stock Inventory', 36, 'add_stockinventory'),
-	(142, 'Can change Stock Inventory', 36, 'change_stockinventory'),
-	(143, 'Can delete Stock Inventory', 36, 'delete_stockinventory'),
-	(144, 'Can view Stock Inventory', 36, 'view_stockinventory'),
-	(145, 'Can add vendor', 37, 'add_vendor'),
-	(146, 'Can change vendor', 37, 'change_vendor'),
-	(147, 'Can delete vendor', 37, 'delete_vendor'),
-	(148, 'Can view vendor', 37, 'view_vendor'),
+	(21, 'Can add Token', 6, 'add_token'),
+	(22, 'Can change Token', 6, 'change_token'),
+	(23, 'Can delete Token', 6, 'delete_token'),
+	(24, 'Can view Token', 6, 'view_token'),
+	(25, 'Can add token', 7, 'add_tokenproxy'),
+	(26, 'Can change token', 7, 'change_tokenproxy'),
+	(27, 'Can delete token', 7, 'delete_tokenproxy'),
+	(28, 'Can view token', 7, 'view_tokenproxy'),
+	(29, 'Can add email config', 8, 'add_emailconfig'),
+	(30, 'Can change email config', 8, 'change_emailconfig'),
+	(31, 'Can delete email config', 8, 'delete_emailconfig'),
+	(32, 'Can view email config', 8, 'view_emailconfig'),
+	(33, 'Can add user', 9, 'add_myuser'),
+	(34, 'Can change user', 9, 'change_myuser'),
+	(35, 'Can delete user', 9, 'delete_myuser'),
+	(36, 'Can view user', 9, 'view_myuser'),
+	(37, 'Can add Cart', 10, 'add_cart'),
+	(38, 'Can change Cart', 10, 'change_cart'),
+	(39, 'Can delete Cart', 10, 'delete_cart'),
+	(40, 'Can view Cart', 10, 'view_cart'),
+	(41, 'Can add Blog', 11, 'add_blog'),
+	(42, 'Can change Blog', 11, 'change_blog'),
+	(43, 'Can delete Blog', 11, 'delete_blog'),
+	(44, 'Can view Blog', 11, 'view_blog'),
+	(45, 'Can add Front Store Settings', 12, 'add_frontstore'),
+	(46, 'Can change Front Store Settings', 12, 'change_frontstore'),
+	(47, 'Can delete Front Store Settings', 12, 'delete_frontstore'),
+	(48, 'Can view Front Store Settings', 12, 'view_frontstore'),
+	(49, 'Can add Blog Post', 13, 'add_post'),
+	(50, 'Can change Blog Post', 13, 'change_post'),
+	(51, 'Can delete Blog Post', 13, 'delete_post'),
+	(52, 'Can view Blog Post', 13, 'view_post'),
+	(53, 'Can add business address', 14, 'add_businessaddress'),
+	(54, 'Can change business address', 14, 'change_businessaddress'),
+	(55, 'Can delete business address', 14, 'delete_businessaddress'),
+	(56, 'Can view business address', 14, 'view_businessaddress'),
+	(57, 'Can add delivery regions', 15, 'add_deliveryregions'),
+	(58, 'Can change delivery regions', 15, 'change_deliveryregions'),
+	(59, 'Can delete delivery regions', 15, 'delete_deliveryregions'),
+	(60, 'Can view delivery regions', 15, 'view_deliveryregions'),
+	(61, 'Can add supplier', 16, 'add_supplier'),
+	(62, 'Can change supplier', 16, 'change_supplier'),
+	(63, 'Can delete supplier', 16, 'delete_supplier'),
+	(64, 'Can view supplier', 16, 'view_supplier'),
+	(65, 'Can add pickup stations', 17, 'add_pickupstations'),
+	(66, 'Can change pickup stations', 17, 'change_pickupstations'),
+	(67, 'Can delete pickup stations', 17, 'delete_pickupstations'),
+	(68, 'Can view pickup stations', 17, 'view_pickupstations'),
+	(69, 'Can add employee', 18, 'add_employee'),
+	(70, 'Can change employee', 18, 'change_employee'),
+	(71, 'Can delete employee', 18, 'delete_employee'),
+	(72, 'Can view employee', 18, 'view_employee'),
+	(73, 'Can add customer', 19, 'add_customer'),
+	(74, 'Can change customer', 19, 'change_customer'),
+	(75, 'Can delete customer', 19, 'delete_customer'),
+	(76, 'Can view customer', 19, 'view_customer'),
+	(77, 'Can add address book', 20, 'add_addressbook'),
+	(78, 'Can change address book', 20, 'change_addressbook'),
+	(79, 'Can delete address book', 20, 'delete_addressbook'),
+	(80, 'Can view address book', 20, 'view_addressbook'),
+	(81, 'Can add transactions', 21, 'add_transactions'),
+	(82, 'Can change transactions', 21, 'change_transactions'),
+	(83, 'Can delete transactions', 21, 'delete_transactions'),
+	(84, 'Can view transactions', 21, 'view_transactions'),
+	(85, 'Can add Sales', 22, 'add_sales'),
+	(86, 'Can change Sales', 22, 'change_sales'),
+	(87, 'Can delete Sales', 22, 'delete_sales'),
+	(88, 'Can view Sales', 22, 'view_sales'),
+	(89, 'Can add Mpesa Transactions', 23, 'add_transaction'),
+	(90, 'Can change Mpesa Transactions', 23, 'change_transaction'),
+	(91, 'Can delete Mpesa Transactions', 23, 'delete_transaction'),
+	(92, 'Can view Mpesa Transactions', 23, 'view_transaction'),
+	(93, 'Can add Sales Items', 24, 'add_salesitems'),
+	(94, 'Can change Sales Items', 24, 'change_salesitems'),
+	(95, 'Can delete Sales Items', 24, 'delete_salesitems'),
+	(96, 'Can view Sales Items', 24, 'view_salesitems'),
+	(97, 'Can add category', 25, 'add_category'),
+	(98, 'Can change category', 25, 'change_category'),
+	(99, 'Can delete category', 25, 'delete_category'),
+	(100, 'Can view category', 25, 'view_category'),
+	(101, 'Can add main category', 26, 'add_maincategory'),
+	(102, 'Can change main category', 26, 'change_maincategory'),
+	(103, 'Can delete main category', 26, 'delete_maincategory'),
+	(104, 'Can view main category', 26, 'view_maincategory'),
+	(105, 'Can add Products', 27, 'add_products'),
+	(106, 'Can change Products', 27, 'change_products'),
+	(107, 'Can delete Products', 27, 'delete_products'),
+	(108, 'Can view Products', 27, 'view_products'),
+	(109, 'Can add subcategory', 28, 'add_subcategory'),
+	(110, 'Can change subcategory', 28, 'change_subcategory'),
+	(111, 'Can delete subcategory', 28, 'delete_subcategory'),
+	(112, 'Can view subcategory', 28, 'view_subcategory'),
+	(113, 'Can add unit', 29, 'add_unit'),
+	(114, 'Can change unit', 29, 'change_unit'),
+	(115, 'Can delete unit', 29, 'delete_unit'),
+	(116, 'Can view unit', 29, 'view_unit'),
+	(117, 'Can add Size Variation', 30, 'add_productsize'),
+	(118, 'Can change Size Variation', 30, 'change_productsize'),
+	(119, 'Can delete Size Variation', 30, 'delete_productsize'),
+	(120, 'Can view Size Variation', 30, 'view_productsize'),
+	(121, 'Can add product images', 31, 'add_productimages'),
+	(122, 'Can change product images', 31, 'change_productimages'),
+	(123, 'Can delete product images', 31, 'delete_productimages'),
+	(124, 'Can view product images', 31, 'view_productimages'),
+	(125, 'Can add Color Variation', 32, 'add_productcolor'),
+	(126, 'Can change Color Variation', 32, 'change_productcolor'),
+	(127, 'Can delete Color Variation', 32, 'delete_productcolor'),
+	(128, 'Can view Color Variation', 32, 'view_productcolor'),
+	(129, 'Can add Favourites', 33, 'add_favourites'),
+	(130, 'Can change Favourites', 33, 'change_favourites'),
+	(131, 'Can delete Favourites', 33, 'delete_favourites'),
+	(132, 'Can view Favourites', 33, 'view_favourites'),
+	(133, 'Can add order', 34, 'add_order'),
+	(134, 'Can change order', 34, 'change_order'),
+	(135, 'Can delete order', 34, 'delete_order'),
+	(136, 'Can view order', 34, 'view_order'),
+	(137, 'Can add order item', 35, 'add_orderitem'),
+	(138, 'Can change order item', 35, 'change_orderitem'),
+	(139, 'Can delete order item', 35, 'delete_orderitem'),
+	(140, 'Can view order item', 35, 'view_orderitem'),
+	(141, 'Can add invoice', 36, 'add_invoice'),
+	(142, 'Can change invoice', 36, 'change_invoice'),
+	(143, 'Can delete invoice', 36, 'delete_invoice'),
+	(144, 'Can view invoice', 36, 'view_invoice'),
+	(145, 'Can add Stock Inventory', 37, 'add_stockinventory'),
+	(146, 'Can change Stock Inventory', 37, 'change_stockinventory'),
+	(147, 'Can delete Stock Inventory', 37, 'delete_stockinventory'),
+	(148, 'Can view Stock Inventory', 37, 'view_stockinventory'),
 	(149, 'Can add review', 38, 'add_review'),
 	(150, 'Can change review', 38, 'change_review'),
 	(151, 'Can delete review', 38, 'delete_review'),
 	(152, 'Can view review', 38, 'view_review'),
-	(153, 'Can add review', 39, 'add_review'),
-	(154, 'Can change review', 39, 'change_review'),
-	(155, 'Can delete review', 39, 'delete_review'),
-	(156, 'Can view review', 39, 'view_review'),
-	(157, 'Can add Front Store', 40, 'add_frontstore'),
-	(158, 'Can change Front Store', 40, 'change_frontstore'),
-	(159, 'Can delete Front Store', 40, 'delete_frontstore'),
-	(160, 'Can view Front Store', 40, 'view_frontstore'),
+	(153, 'Can add vendor', 39, 'add_vendor'),
+	(154, 'Can change vendor', 39, 'change_vendor'),
+	(155, 'Can delete vendor', 39, 'delete_vendor'),
+	(156, 'Can view vendor', 39, 'view_vendor'),
+	(157, 'Can add review', 40, 'add_review'),
+	(158, 'Can change review', 40, 'change_review'),
+	(159, 'Can delete review', 40, 'delete_review'),
+	(160, 'Can view review', 40, 'view_review'),
 	(161, 'Can add Mpesa Transactions', 41, 'add_transaction'),
 	(162, 'Can change Mpesa Transactions', 41, 'change_transaction'),
 	(163, 'Can delete Mpesa Transactions', 41, 'delete_transaction'),
-	(164, 'Can view Mpesa Transactions', 41, 'view_transaction');
+	(164, 'Can view Mpesa Transactions', 41, 'view_transaction'),
+	(165, 'Can add Token', 9, 'add_token'),
+	(166, 'Can change Token', 9, 'change_token'),
+	(167, 'Can delete Token', 9, 'delete_token'),
+	(168, 'Can view Token', 9, 'view_token'),
+	(169, 'Can add token', 10, 'add_tokenproxy'),
+	(170, 'Can change token', 10, 'change_tokenproxy'),
+	(171, 'Can delete token', 10, 'delete_tokenproxy'),
+	(172, 'Can view token', 10, 'view_tokenproxy'),
+	(173, 'Can add user', 7, 'add_myuser'),
+	(174, 'Can change user', 7, 'change_myuser'),
+	(175, 'Can delete user', 7, 'delete_myuser'),
+	(176, 'Can view user', 7, 'view_myuser'),
+	(177, 'Can add Cart', 8, 'add_cart'),
+	(178, 'Can change Cart', 8, 'change_cart'),
+	(179, 'Can delete Cart', 8, 'delete_cart'),
+	(180, 'Can view Cart', 8, 'view_cart'),
+	(181, 'Can add Blog', 43, 'add_blog'),
+	(182, 'Can change Blog', 43, 'change_blog'),
+	(183, 'Can delete Blog', 43, 'delete_blog'),
+	(184, 'Can view Blog', 43, 'view_blog'),
+	(185, 'Can add Front Store Settings', 42, 'add_frontstore'),
+	(186, 'Can change Front Store Settings', 42, 'change_frontstore'),
+	(187, 'Can delete Front Store Settings', 42, 'delete_frontstore'),
+	(188, 'Can view Front Store Settings', 42, 'view_frontstore'),
+	(189, 'Can add Blog Post', 44, 'add_post'),
+	(190, 'Can change Blog Post', 44, 'change_post'),
+	(191, 'Can delete Blog Post', 44, 'delete_post'),
+	(192, 'Can view Blog Post', 44, 'view_post'),
+	(193, 'Can add email config', 45, 'add_emailconfig'),
+	(194, 'Can change email config', 45, 'change_emailconfig'),
+	(195, 'Can delete email config', 45, 'delete_emailconfig'),
+	(196, 'Can view email config', 45, 'view_emailconfig'),
+	(197, 'Can add business address', 11, 'add_businessaddress'),
+	(198, 'Can change business address', 11, 'change_businessaddress'),
+	(199, 'Can delete business address', 11, 'delete_businessaddress'),
+	(200, 'Can view business address', 11, 'view_businessaddress'),
+	(201, 'Can add delivery regions', 12, 'add_deliveryregions'),
+	(202, 'Can change delivery regions', 12, 'change_deliveryregions'),
+	(203, 'Can delete delivery regions', 12, 'delete_deliveryregions'),
+	(204, 'Can view delivery regions', 12, 'view_deliveryregions'),
+	(205, 'Can add supplier', 13, 'add_supplier'),
+	(206, 'Can change supplier', 13, 'change_supplier'),
+	(207, 'Can delete supplier', 13, 'delete_supplier'),
+	(208, 'Can view supplier', 13, 'view_supplier'),
+	(209, 'Can add pickup stations', 14, 'add_pickupstations'),
+	(210, 'Can change pickup stations', 14, 'change_pickupstations'),
+	(211, 'Can delete pickup stations', 14, 'delete_pickupstations'),
+	(212, 'Can view pickup stations', 14, 'view_pickupstations'),
+	(213, 'Can add employee', 15, 'add_employee'),
+	(214, 'Can change employee', 15, 'change_employee'),
+	(215, 'Can delete employee', 15, 'delete_employee'),
+	(216, 'Can view employee', 15, 'view_employee'),
+	(217, 'Can add customer', 16, 'add_customer'),
+	(218, 'Can change customer', 16, 'change_customer'),
+	(219, 'Can delete customer', 16, 'delete_customer'),
+	(220, 'Can view customer', 16, 'view_customer'),
+	(221, 'Can add address book', 17, 'add_addressbook'),
+	(222, 'Can change address book', 17, 'change_addressbook'),
+	(223, 'Can delete address book', 17, 'delete_addressbook'),
+	(224, 'Can view address book', 17, 'view_addressbook'),
+	(225, 'Can add transactions', 18, 'add_transactions'),
+	(226, 'Can change transactions', 18, 'change_transactions'),
+	(227, 'Can delete transactions', 18, 'delete_transactions'),
+	(228, 'Can view transactions', 18, 'view_transactions'),
+	(229, 'Can add Sales', 19, 'add_sales'),
+	(230, 'Can change Sales', 19, 'change_sales'),
+	(231, 'Can delete Sales', 19, 'delete_sales'),
+	(232, 'Can view Sales', 19, 'view_sales'),
+	(233, 'Can add Sales Items', 22, 'add_salesitems'),
+	(234, 'Can change Sales Items', 22, 'change_salesitems'),
+	(235, 'Can delete Sales Items', 22, 'delete_salesitems'),
+	(236, 'Can view Sales Items', 22, 'view_salesitems'),
+	(237, 'Can add category', 23, 'add_category'),
+	(238, 'Can change category', 23, 'change_category'),
+	(239, 'Can delete category', 23, 'delete_category'),
+	(240, 'Can view category', 23, 'view_category'),
+	(241, 'Can add main category', 24, 'add_maincategory'),
+	(242, 'Can change main category', 24, 'change_maincategory'),
+	(243, 'Can delete main category', 24, 'delete_maincategory'),
+	(244, 'Can view main category', 24, 'view_maincategory'),
+	(245, 'Can add Products', 25, 'add_products'),
+	(246, 'Can change Products', 25, 'change_products'),
+	(247, 'Can delete Products', 25, 'delete_products'),
+	(248, 'Can view Products', 25, 'view_products'),
+	(249, 'Can add subcategory', 26, 'add_subcategory'),
+	(250, 'Can change subcategory', 26, 'change_subcategory'),
+	(251, 'Can delete subcategory', 26, 'delete_subcategory'),
+	(252, 'Can view subcategory', 26, 'view_subcategory'),
+	(253, 'Can add unit', 27, 'add_unit'),
+	(254, 'Can change unit', 27, 'change_unit'),
+	(255, 'Can delete unit', 27, 'delete_unit'),
+	(256, 'Can view unit', 27, 'view_unit'),
+	(257, 'Can add Size Variation', 29, 'add_productsize'),
+	(258, 'Can change Size Variation', 29, 'change_productsize'),
+	(259, 'Can delete Size Variation', 29, 'delete_productsize'),
+	(260, 'Can view Size Variation', 29, 'view_productsize'),
+	(261, 'Can add product images', 30, 'add_productimages'),
+	(262, 'Can change product images', 30, 'change_productimages'),
+	(263, 'Can delete product images', 30, 'delete_productimages'),
+	(264, 'Can view product images', 30, 'view_productimages'),
+	(265, 'Can add Color Variation', 31, 'add_productcolor'),
+	(266, 'Can change Color Variation', 31, 'change_productcolor'),
+	(267, 'Can delete Color Variation', 31, 'delete_productcolor'),
+	(268, 'Can view Color Variation', 31, 'view_productcolor'),
+	(269, 'Can add Favourites', 32, 'add_favourites'),
+	(270, 'Can change Favourites', 32, 'change_favourites'),
+	(271, 'Can delete Favourites', 32, 'delete_favourites'),
+	(272, 'Can view Favourites', 32, 'view_favourites'),
+	(273, 'Can add order', 33, 'add_order'),
+	(274, 'Can change order', 33, 'change_order'),
+	(275, 'Can delete order', 33, 'delete_order'),
+	(276, 'Can view order', 33, 'view_order'),
+	(277, 'Can add order item', 34, 'add_orderitem'),
+	(278, 'Can change order item', 34, 'change_orderitem'),
+	(279, 'Can delete order item', 34, 'delete_orderitem'),
+	(280, 'Can view order item', 34, 'view_orderitem'),
+	(281, 'Can add invoice', 35, 'add_invoice'),
+	(282, 'Can change invoice', 35, 'change_invoice'),
+	(283, 'Can delete invoice', 35, 'delete_invoice'),
+	(284, 'Can view invoice', 35, 'view_invoice'),
+	(285, 'Can add Stock Inventory', 36, 'add_stockinventory'),
+	(286, 'Can change Stock Inventory', 36, 'change_stockinventory'),
+	(287, 'Can delete Stock Inventory', 36, 'delete_stockinventory'),
+	(288, 'Can view Stock Inventory', 36, 'view_stockinventory'),
+	(289, 'Can add review', 39, 'add_review'),
+	(290, 'Can change review', 39, 'change_review'),
+	(291, 'Can delete review', 39, 'delete_review'),
+	(292, 'Can view review', 39, 'view_review'),
+	(293, 'Can add vendor', 37, 'add_vendor'),
+	(294, 'Can change vendor', 37, 'change_vendor'),
+	(295, 'Can delete vendor', 37, 'delete_vendor'),
+	(296, 'Can view vendor', 37, 'view_vendor'),
+	(297, 'Can add site', 46, 'add_site'),
+	(298, 'Can change site', 46, 'change_site'),
+	(299, 'Can delete site', 46, 'delete_site'),
+	(300, 'Can view site', 46, 'view_site'),
+	(301, 'Can add Post Comment', 47, 'add_comments'),
+	(302, 'Can change Post Comment', 47, 'change_comments'),
+	(303, 'Can delete Post Comment', 47, 'delete_comments'),
+	(304, 'Can view Post Comment', 47, 'view_comments');
+
+-- Dumping structure for table bengomall.blog
+CREATE TABLE IF NOT EXISTS `blog` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `date_created` datetime(6) NOT NULL,
+  `published` tinyint(1) NOT NULL,
+  `author_id` bigint DEFAULT NULL,
+  `excerpt` longtext NOT NULL DEFAULT (_utf8mb3'Dive into the season of joy and mindfulness with Yogi\'s Delight! Explore our guide on maintaining serenity amidst the festive bustle. From calming yoga routines to mindful gift-giving, discover how you can infuse your holidays with peace and positivity.'),
+  `featured_image` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `blog_author_id_125a421c_fk_authmanagement_myuser_id` (`author_id`),
+  CONSTRAINT `blog_author_id_125a421c_fk_authmanagement_myuser_id` FOREIGN KEY (`author_id`) REFERENCES `authmanagement_myuser` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.blog: ~3 rows (approximately)
+INSERT IGNORE INTO `blog` (`id`, `title`, `date_created`, `published`, `author_id`, `excerpt`, `featured_image`) VALUES
+	(1, 'Yuletide Zen: Finding Balance in Festivity', '2023-12-19 17:41:31.000000', 1, 13, 'Dive into the season of joy and mindfulness with Yogi\'s Delight! Explore our guide on maintaining serenity amidst the festive bustle. From calming yoga routines to mindful gift-giving, discover how you can infuse your holidays with peace and positivity.', 'Blog/featured/yogisbanner.png'),
+	(2, 'Nurturing Wellness: A December Retreat', '2023-12-19 19:17:51.000000', 1, 36, 'Join us on a virtual retreat this December as we delve into the art of self-care. Explore the wellness practices that can transform your month into a rejuvenating escape. Discover exclusive offers on our curated collection, designed to nurture your mind, body, and spirit.', 'Blog/featured/tisho1-removebg-preview.png'),
+	(3, 'Unwrap Joy: Yogi\'s Delight Gift Guide 2023', '2023-12-19 19:17:51.000000', 1, 13, 'This festive season, embark on a journey of thoughtful gifting with Yogi\'s Delight! Our comprehensive gift guide is a treasure trove of unique ideas for every yogi on your list. From cozy apparel to wellness essentials, find the perfect present to spread joy and good vibes.', 'Blog/featured/mug.png');
+
+-- Dumping structure for table bengomall.blog_posts
+CREATE TABLE IF NOT EXISTS `blog_posts` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `image` varchar(100) NOT NULL,
+  `blog_id` bigint NOT NULL,
+  `content` longtext NOT NULL DEFAULT (_utf8mb3'Enter post content here'),
+  PRIMARY KEY (`id`),
+  KEY `blog_posts_blog_id_21fd6b99_fk_blog_id` (`blog_id`),
+  CONSTRAINT `blog_posts_blog_id_21fd6b99_fk_blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.blog_posts: ~3 rows (approximately)
+INSERT IGNORE INTO `blog_posts` (`id`, `title`, `image`, `blog_id`, `content`) VALUES
+	(2, 'Harmony in Threads: Serenity Sweater Collection', 'Blog/posts/tisho1-removebg-preview.png', 2, 'Wrap yourself in the warmth of serenity with our December-exclusive Serenity Sweater Collection. Each piece is a harmony of comfort and style, designed to elevate your winter wardrobe. Embrace the cozy allure of mindfulness with every stitch.'),
+	(3, 'Essence of Tranquility: Aromatherapy Diffuser Set', 'Blog/posts/bag.png', 3, 'Immerse your space in the essence of tranquility with our Aromatherapy Diffuser Set. Handpicked scents, curated for relaxation, transform any room into a sanctuary. Elevate your mindfulness rituals and embrace the soothing aromas that define the spirit of Yogi\'s Delight.'),
+	(4, 'Celestial Comfort: Luna Yoga Mat', 'Blog/posts/logo-light.png', 1, 'Elevate your practice with the Luna Yoga Mat from our December collection! Crafted for celestial comfort, this non-slip mat provides a serene foundation for your yoga journey. Immerse yourself in the tranquility of lunar-inspired design and experience the essence of Yogi\'s Delight.');
+
+-- Dumping structure for table bengomall.business_addresses
+CREATE TABLE IF NOT EXISTS `business_addresses` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `state` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `box` varchar(500) NOT NULL,
+  `street_or_road` varchar(255) NOT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `other_phone` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.business_addresses: ~0 rows (approximately)
 
 -- Dumping structure for table bengomall.cart
 CREATE TABLE IF NOT EXISTS `cart` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `quantity` int unsigned NOT NULL,
-  `item_subtotal` double NOT NULL,
   `tax` double NOT NULL,
-  `item_total` double NOT NULL,
-  `user_id` bigint NOT NULL,
   `retail_price` double NOT NULL,
+  `item_subtotal` double NOT NULL,
+  `item_total` double NOT NULL,
   `stock_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `cart_user_id_1361a739_fk_authmanagement_myuser_id` (`user_id`),
   KEY `cart_stock_id_88e016ba_fk_inventory_id` (`stock_id`),
+  KEY `cart_user_id_1361a739_fk_authmanagement_myuser_id` (`user_id`),
   CONSTRAINT `cart_stock_id_88e016ba_fk_inventory_id` FOREIGN KEY (`stock_id`) REFERENCES `inventory` (`id`),
   CONSTRAINT `cart_user_id_1361a739_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`),
   CONSTRAINT `cart_chk_1` CHECK ((`quantity` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.cart: ~2 rows (approximately)
-INSERT IGNORE INTO `cart` (`id`, `quantity`, `item_subtotal`, `tax`, `item_total`, `user_id`, `retail_price`, `stock_id`) VALUES
-	(32, 1, 300, 0, 300, 13, 300, 2129);
+-- Dumping data for table bengomall.cart: ~1 rows (approximately)
+INSERT IGNORE INTO `cart` (`id`, `quantity`, `tax`, `retail_price`, `item_subtotal`, `item_total`, `stock_id`, `user_id`) VALUES
+	(32, 1, 0, 300, 300, 300, 2129, 13);
 
 -- Dumping structure for table bengomall.categories
 CREATE TABLE IF NOT EXISTS `categories` (
@@ -472,7 +676,7 @@ CREATE TABLE IF NOT EXISTS `categories_subcategories` (
   KEY `categories_Subcatego_subcategory_id_3f874263_fk_subcatego` (`subcategory_id`),
   CONSTRAINT `categories_Subcatego_subcategory_id_3f874263_fk_subcatego` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`id`),
   CONSTRAINT `categories_Subcategories_category_id_56271c2a_fk_categories_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2467 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2239 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table bengomall.categories_subcategories: ~132 rows (approximately)
 INSERT IGNORE INTO `categories_subcategories` (`id`, `category_id`, `subcategory_id`) VALUES
@@ -609,6 +813,46 @@ INSERT IGNORE INTO `categories_subcategories` (`id`, `category_id`, `subcategory
 	(2019, 451, 503),
 	(2020, 452, 504);
 
+-- Dumping structure for table bengomall.core_emailconfig
+CREATE TABLE IF NOT EXISTS `core_emailconfig` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `from_email` varchar(100) NOT NULL,
+  `email_password` varchar(128) NOT NULL,
+  `email_host` varchar(50) NOT NULL,
+  `email_port` varchar(5) NOT NULL,
+  `use_tls` tinyint(1) NOT NULL,
+  `fail_silently` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.core_emailconfig: ~1 rows (approximately)
+INSERT IGNORE INTO `core_emailconfig` (`id`, `from_email`, `email_password`, `email_host`, `email_port`, `use_tls`, `fail_silently`) VALUES
+	(1, 'codevertexitsolutions@gmail.com', 'vgphtytkiqsneyqf', 'smtp.gmail.com', '587', 1, 0);
+
+-- Dumping structure for table bengomall.customers
+CREATE TABLE IF NOT EXISTS `customers` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  CONSTRAINT `customers_user_id_28f6c6eb_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.customers: ~0 rows (approximately)
+
+-- Dumping structure for table bengomall.delivery_regions
+CREATE TABLE IF NOT EXISTS `delivery_regions` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `region` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `door_step_delivery` tinyint(1) NOT NULL,
+  `door_step_delivery_charge` bigint unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `delivery_regions_chk_1` CHECK ((`door_step_delivery_charge` >= 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.delivery_regions: ~0 rows (approximately)
+
 -- Dumping structure for table bengomall.django_admin_log
 CREATE TABLE IF NOT EXISTS `django_admin_log` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -625,9 +869,9 @@ CREATE TABLE IF NOT EXISTS `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=5568 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5617 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.django_admin_log: ~5,382 rows (approximately)
+-- Dumping data for table bengomall.django_admin_log: ~5,616 rows (approximately)
 INSERT IGNORE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
 	(1, '2023-11-02 15:59:40.687153', '15', 'johndoe@user.com', 1, '[{"added": {}}]', 7, 13),
 	(2, '2023-11-03 10:37:00.769184', '1', '00100-397', 1, '[{"added": {}}]', 11, 13),
@@ -6195,19 +6439,67 @@ INSERT IGNORE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object
 	(5564, '2023-11-27 20:40:38.633777', '1261', 'Bar Soap 123', 2, '[{"changed": {"name": "Size Variation", "object": "8 sacks", "fields": ["Size"]}}, {"deleted": {"name": "Size Variation", "object": "8 kg"}}, {"deleted": {"name": "Size Variation", "object": "4 kg"}}]', 25, 13),
 	(5565, '2023-11-27 20:43:15.810505', '1261', 'Bar Soap 123', 2, '[{"added": {"name": "Size Variation", "object": "100 kg"}}, {"changed": {"name": "Size Variation", "object": "6 sacks", "fields": ["Size"]}}]', 25, 13),
 	(5566, '2023-11-27 20:45:11.194921', '2340', 'Bar Soap 123 (6)', 1, '[{"added": {}}]', 36, 13),
-	(5567, '2023-11-27 20:46:26.923701', '2341', 'Bar Soap 123 (100)', 1, '[{"added": {}}]', 36, 13);
+	(5567, '2023-11-27 20:46:26.923701', '2341', 'Bar Soap 123 (100)', 1, '[{"added": {}}]', 36, 13),
+	(5568, '2023-12-18 08:59:26.606014', '2', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5569, '2023-12-18 08:59:35.873846', '3', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5570, '2023-12-18 08:59:44.304362', '4', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5571, '2023-12-18 08:59:53.943692', '5', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5572, '2023-12-18 09:01:11.945869', '5', 'Front Store Settings', 2, '[{"changed": {"fields": ["Slider text"]}}]', 42, 13),
+	(5573, '2023-12-18 09:01:11.948838', '4', 'Front Store Settings', 2, '[{"changed": {"fields": ["Slider text"]}}]', 42, 13),
+	(5574, '2023-12-18 09:01:11.949837', '3', 'Front Store Settings', 2, '[{"changed": {"fields": ["Slider text"]}}]', 42, 13),
+	(5575, '2023-12-18 09:01:11.951890', '2', 'Front Store Settings', 2, '[{"changed": {"fields": ["Slider text"]}}]', 42, 13),
+	(5576, '2023-12-18 09:01:11.958839', '1', 'Front Store Settings', 2, '[{"changed": {"fields": ["Slider text", "Slider image"]}}]', 42, 13),
+	(5577, '2023-12-18 09:20:00.809564', '5', 'Front Store Settings', 2, '[{"changed": {"fields": ["Slider image"]}}]', 42, 13),
+	(5578, '2023-12-18 16:30:36.857728', '1', 'codevertexitsolutions@gmail.com', 1, '[{"added": {}}]', 45, 13),
+	(5579, '2023-12-18 17:17:11.662600', '1', 'codevertexitsolutions@gmail.com', 2, '[{"changed": {"fields": ["Email port"]}}]', 45, 13),
+	(5580, '2023-12-18 17:17:26.044688', '18', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5581, '2023-12-18 17:25:18.047119', '19', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5582, '2023-12-18 17:31:04.291363', '22', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5583, '2023-12-18 17:52:30.966442', '1', 'mall@bengohub.co.ke', 2, '[{"changed": {"fields": ["From email", "Email password", "Email host", "Email port"]}}]', 45, 13),
+	(5584, '2023-12-18 17:52:46.515064', '23', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5585, '2023-12-18 18:05:16.728231', '1', 'codevertexitsolutions@gmail.com', 2, '[{"changed": {"fields": ["From email", "Email password", "Email host", "Email port"]}}]', 45, 13),
+	(5586, '2023-12-18 18:17:19.881709', '24', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5587, '2023-12-18 18:31:22.389899', '1', 'codevertexitsolutions@gmail.com', 2, '[{"changed": {"fields": ["Email password"]}}]', 45, 13),
+	(5588, '2023-12-18 18:31:47.399290', '25', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5589, '2023-12-18 18:36:46.563472', '26', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5590, '2023-12-18 18:58:04.598967', '27', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5591, '2023-12-18 18:59:31.550331', '28', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5592, '2023-12-18 19:01:47.956927', '29', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5593, '2023-12-18 19:04:48.106219', '30', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5594, '2023-12-18 19:19:43.444912', '32', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5595, '2023-12-18 19:26:58.555628', '34', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5596, '2023-12-18 19:33:28.140438', '35', 'titusowuor30@gmail.com', 2, '[{"changed": {"fields": ["Is active"]}}]', 7, 13),
+	(5597, '2023-12-18 19:51:49.030052', '35', 'titusowuor30@gmail.com', 3, '', 7, 13),
+	(5598, '2023-12-18 19:56:39.061122', '1', 'http://127.0.0.1:8080/login', 2, '[{"changed": {"fields": ["Domain name"]}}]', 46, 13),
+	(5599, '2023-12-19 18:06:34.519723', '1', 'Our latest brands', 1, '[{"added": {}}, {"added": {"name": "Blog Post", "object": "Yogis Branded bags"}}]', 43, 13),
+	(5600, '2023-12-19 19:00:51.636770', '1', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5601, '2023-12-19 19:01:14.834223', '2', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5602, '2023-12-19 19:01:43.116518', '3', 'Front Store Settings', 1, '[{"added": {}}]', 42, 13),
+	(5603, '2023-12-19 19:11:46.465954', '1', 'Our latest brands', 2, '[{"changed": {"fields": ["Author"]}}]', 43, 13),
+	(5604, '2023-12-19 19:15:07.593353', '1', 'Yuletide Zen: Finding Balance in Festivity', 2, '[{"changed": {"fields": ["Title"]}}]', 43, 13),
+	(5605, '2023-12-19 19:18:20.412725', '1', 'Yuletide Zen: Finding Balance in Festivity', 2, '[]', 43, 13),
+	(5606, '2023-12-19 19:19:15.210368', '2', 'Nurturing Wellness: A December Retreat', 1, '[{"added": {}}]', 43, 13),
+	(5607, '2023-12-19 19:19:53.539312', '3', 'Unwrap Joy: Yogi\'s Delight Gift Guide 2023', 1, '[{"added": {}}]', 43, 13),
+	(5608, '2023-12-19 19:19:58.239824', '3', 'Unwrap Joy: Yogi\'s Delight Gift Guide 2023', 2, '[{"changed": {"fields": ["Published"]}}]', 43, 13),
+	(5609, '2023-12-19 19:23:01.980686', '1', 'Yuletide Zen: Finding Balance in Festivity', 2, '[{"changed": {"fields": ["Featured image"]}}, {"deleted": {"name": "Blog Post", "object": "Celestial Comfort: Luna Yoga Mat"}}]', 43, 13),
+	(5610, '2023-12-19 19:23:57.842336', '2', 'Nurturing Wellness: A December Retreat', 2, '[{"changed": {"fields": ["Featured image"]}}, {"added": {"name": "Blog Post", "object": "Harmony in Threads: Serenity Sweater Collection"}}]', 43, 13),
+	(5611, '2023-12-19 19:24:59.284242', '3', 'Unwrap Joy: Yogi\'s Delight Gift Guide 2023', 2, '[{"changed": {"fields": ["Featured image"]}}, {"added": {"name": "Blog Post", "object": "Essence of Tranquility: Aromatherapy Diffuser Set"}}]', 43, 13),
+	(5612, '2023-12-19 20:07:57.036238', '1', 'admin@bengohub.co.ke', 1, '[{"added": {}}]', 47, 13),
+	(5613, '2023-12-19 20:08:02.945665', '1', 'janedoe@user.com', 2, '[{"changed": {"fields": ["User"]}}]', 47, 13),
+	(5614, '2023-12-19 20:26:50.122459', '1', 'janedoe@user.com', 3, '', 47, 13),
+	(5615, '2023-12-19 20:29:58.658694', '1', 'Yuletide Zen: Finding Balance in Festivity', 2, '[{"added": {"name": "Blog Post", "object": "Celestial Comfort: Luna Yoga Mat"}}]', 43, 13),
+	(5616, '2023-12-19 20:30:50.773473', '2', 'janedoe@user.com', 1, '[{"added": {}}]', 47, 13);
 
 -- Dumping structure for table bengomall.django_content_type
-DROP TABLE IF EXISTS `django_content_type`;
 CREATE TABLE IF NOT EXISTS `django_content_type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_label` varchar(100) NOT NULL,
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.django_content_type: ~38 rows (approximately)
+-- Dumping data for table bengomall.django_content_type: ~47 rows (approximately)
 INSERT IGNORE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(1, 'admin', 'logentry'),
 	(3, 'auth', 'group'),
@@ -6218,6 +6510,11 @@ INSERT IGNORE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(10, 'authtoken', 'tokenproxy'),
 	(8, 'cart', 'cart'),
 	(4, 'contenttypes', 'contenttype'),
+	(43, 'core', 'blog'),
+	(47, 'core', 'comments'),
+	(45, 'core', 'emailconfig'),
+	(42, 'core', 'frontstore'),
+	(44, 'core', 'post'),
 	(17, 'human_resource', 'addressbook'),
 	(11, 'human_resource', 'businessaddress'),
 	(16, 'human_resource', 'customer'),
@@ -6245,6 +6542,7 @@ INSERT IGNORE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(26, 'product', 'subcategory'),
 	(27, 'product', 'unit'),
 	(5, 'sessions', 'session'),
+	(46, 'sites', 'site'),
 	(40, 'stockinventory', 'frontstore'),
 	(39, 'stockinventory', 'review'),
 	(36, 'stockinventory', 'stockinventory'),
@@ -6252,16 +6550,15 @@ INSERT IGNORE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(37, 'vendor', 'vendor');
 
 -- Dumping structure for table bengomall.django_migrations
-DROP TABLE IF EXISTS `django_migrations`;
 CREATE TABLE IF NOT EXISTS `django_migrations` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `app` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.django_migrations: ~63 rows (approximately)
+-- Dumping data for table bengomall.django_migrations: ~89 rows (approximately)
 INSERT IGNORE INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 	(1, 'contenttypes', '0001_initial', '2023-11-02 15:10:49.969296'),
 	(2, 'contenttypes', '0002_remove_content_type_name', '2023-11-02 15:10:50.027685'),
@@ -6339,10 +6636,21 @@ INSERT IGNORE INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 	(76, 'product', '0011_alter_category_name_alter_maincategory_name_and_more', '2023-11-21 15:36:10.545385'),
 	(77, 'stockinventory', '0020_alter_frontstore_flash_sale_end_date', '2023-11-21 15:36:10.561098'),
 	(78, 'pos', '0011_alter_sales_paymethod', '2023-11-21 15:50:14.799544'),
-	(79, 'stockinventory', '0021_alter_frontstore_flash_sale_end_date', '2023-11-21 15:50:14.838759');
+	(79, 'stockinventory', '0021_alter_frontstore_flash_sale_end_date', '2023-11-21 15:50:14.838759'),
+	(80, 'authmanagement', '0002_delete_emailconfig', '2023-12-18 16:16:49.524165'),
+	(81, 'core', '0001_initial', '2023-12-18 16:19:53.606630'),
+	(82, 'core', '0002_emailconfig_alter_blog_date_created_and_more', '2023-12-18 16:19:53.641630'),
+	(83, 'core', '0003_alter_blog_date_created_and_more', '2023-12-18 17:14:33.640870'),
+	(84, 'sites', '0001_initial', '2023-12-18 17:14:33.683124'),
+	(85, 'sites', '0002_alter_domain_unique', '2023-12-18 17:14:33.714780'),
+	(86, 'authmanagement', '0003_myuser_email_confirm_token', '2023-12-18 19:24:54.227865'),
+	(87, 'core', '0004_alter_blog_date_created_alter_emailconfig_email_port_and_more', '2023-12-18 19:24:54.227865'),
+	(88, 'core', '0005_remove_post_date_created_remove_post_published_and_more', '2023-12-19 18:08:16.356803'),
+	(89, 'core', '0006_blog_author_alter_blog_date_created_and_more', '2023-12-19 19:10:39.984985'),
+	(90, 'core', '0007_blog_excerpt_alter_blog_date_created_and_more', '2023-12-19 19:17:48.378328'),
+	(91, 'core', '0008_blog_featured_image_alter_blog_date_created_and_more', '2023-12-19 19:21:45.398987');
 
 -- Dumping structure for table bengomall.django_session
-DROP TABLE IF EXISTS `django_session`;
 CREATE TABLE IF NOT EXISTS `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
@@ -6351,7 +6659,7 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.django_session: ~171 rows (approximately)
+-- Dumping data for table bengomall.django_session: ~179 rows (approximately)
 INSERT IGNORE INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 	('072k7jzoipfaomf40a3gjzvh88j2xaqj', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1r2aig:MOK9EuyfDJul0SJS-vDpcTnHnqV1LPk4tnsWPajiiwA', '2023-11-27 20:27:30.932001'),
 	('07ki61hqsini779bzzik75vcrc4szeqh', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1qzXrB:l2fY_hEJw_mY_A1uWcDQov06eVluq-NRJcHaqYcpMLo', '2023-11-19 07:47:41.008515'),
@@ -6429,6 +6737,7 @@ INSERT IGNORE INTO `django_session` (`session_key`, `session_data`, `expire_date
 	('dwxr3fxqirld3sx3c8pgl64dnd2d3767', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1qzAjy:XSCkdkbCUQmciOsrff2eZ5jEp1bjGvWKzd7-Hx_GQvA', '2023-11-18 07:06:42.947682'),
 	('dx9zkz615zs5ge2dhjqj61bv5cma2t6d', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1r00jG:jR1fAuubfvHgPTxZkJ7d1leSVjaY6d0UVckkKPtUkxY', '2023-11-20 17:37:26.291561'),
 	('e34cauczwdluywwdj53wfll1n7cawn4n', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r2ayp:68jvTfqwUomMJZpe5SuZvGDFWpX9JkrC5g366heUxYs', '2023-11-27 20:44:11.744999'),
+	('egtao572y6n6p4y1wdzjfw3nltltaxrl', '.eJxVjDsOwyAQBe9CHSHAfNYp0_sMCNglOIlAMnYV5e6xJRdJ-2bmvZkP21r81mnxM7IrkwO7_I4xpCfVg-Aj1HvjqdV1mSM_FH7SzqeG9Lqd7t9BCb3sNQgtlUHKMqDVFi1GMujGMYMAITUoBTpQAoHKaNKOUo40RKcAYafs8wUBGjfo:1rFcH9:mkV0hQWvFrmHB0ElByzBewvc03z7nkozq4Mm_i-NfCA', '2024-01-02 18:44:55.299434'),
 	('eu45x5fa9gpjwmf0djk0wpjlj8wrn5nd', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1qzIRq:eD78p4J2L6qhVXFqm9Y8UXXmgc9yqEw-7fSXweSA5wo', '2023-11-18 15:20:30.117917'),
 	('exrawimxyplehwr45vk1a0zc93djk1u4', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1r2pzP:CT4O0nGyDc8q3M947o6GtihKTZMV2QQAZPTtIGIDB0I', '2023-11-28 12:45:47.812946'),
 	('fn34b3uk9atgbrw5wl697mn5g0l01jn8', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r7gMv:VPb2ey3rapAFnBeD7GZD-dQjCkn8itnq-gf42LxdGYs', '2023-12-11 21:30:05.619361'),
@@ -6476,6 +6785,7 @@ INSERT IGNORE INTO `django_session` (`session_key`, `session_data`, `expire_date
 	('pmiewar3zzcq0aju9n7wk2w9xbii6205', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r5Jzt:aA9wgCDux3BPIcuvMjm58IeIZ8XhInG8mTpc9NwP7mE', '2023-12-05 09:12:33.069685'),
 	('q6rid3qlfr0myx0s4kuw6ph9jtrkt5pt', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1qzWsB:5-CYjzLGaIXphxcOM3YG6J1GwKyfqXuOe3O1W_JO8zg', '2023-11-19 06:44:39.624888'),
 	('qe5u8m716hmxbs6k4uarrp7zh79en0vy', 'e30:1qya73:wtDPcfPE9l2SXiFX6i_idJiHP0XR22KMs4ZWaJGNEoA', '2023-11-16 16:00:05.301753'),
+	('qh55n6fhogvffyfqt0czuvhobku972zw', '.eJxVjMsOwiAQRf-FtSGEh4BL934DmRkGqRpISrtq_Hdt0oVu7znnbiLButS0Dp7TlMVFmLM4_Y4I9OS2k_yAdu-SelvmCeWuyIMOeeuZX9fD_TuoMOq3LsFGhuAZsHiKgJpjyI6MCxxsQSRrnAUuoHwBVEWR1tpgZB2cNyjeH0J5OTU:1rFGtQ:5Iodn5EwO7JYrwPnBOSp--3leK7TqIPjl91GZ9EHBpg', '2024-01-01 19:55:00.737757'),
 	('qhoc4c1fi5o0sf8xpwwb4wd7jty5qbh5', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1qybOr:v3yUk1jx7Mzy-fGatoTcjsQpLURciiLDvB08HzcljQ0', '2023-11-16 17:22:33.721398'),
 	('qjpsgt9j09g5svcix165vdrqkipjr76k', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r2UD9:_nQQ7ShJ6wLfpqX77UFyrQvrfZKCSkT7xV1Jvgj93PE', '2023-11-27 13:30:31.321495'),
 	('quax0mf4o1adfef2p2un7cnh7lfo7zci', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r2U9F:KvTZhTBkpDcTs9dDRNo2msryiGISah8w2wD5_gK74ZY', '2023-11-27 13:26:29.187041'),
@@ -6510,6 +6820,7 @@ INSERT IGNORE INTO `django_session` (`session_key`, `session_data`, `expire_date
 	('v1mb9mdlnipggl5lka67r903ey0qgzco', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r5GnW:4bGtzdjm1KbIpOp-sU1Gn8YUpy1WmX27E988adZuZj4', '2023-12-05 05:47:34.326818'),
 	('v4ia7j4rmxldzuxtv83cdzzbqtwqq3d5', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1qzZO8:1eYCrlDVIgWM8-clYMpsmoywvfrjMkf80KCab9sL3xg', '2023-11-19 09:25:48.032483'),
 	('vh5tbntkyiywv73s6gv8j39jlpid5yyw', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r1p6Q:6wFjgtnMv7RiOdj1YAzv-YZNzjZRJnR0mNBLtnB590M', '2023-11-25 17:36:50.990813'),
+	('vhs9oxeak092hlhstuv7voazdm8j0akw', '.eJxVjMsOwiAQRf-FtSGEh4BL934DmRkGqRpISrtq_Hdt0oVu7znnbiLButS0Dp7TlMVFmLM4_Y4I9OS2k_yAdu-SelvmCeWuyIMOeeuZX9fD_TuoMOq3LsFGhuAZsHiKgJpjyI6MCxxsQSRrnAUuoHwBVEWR1tpgZB2cNyjeH0J5OTU:1rFcVx:Ce2Pd-dE3Il12c0IkFfSgvMKmwLBvhtjZ28D-N7PQxc', '2024-01-02 19:00:13.270561'),
 	('vplgprhno2hej7pq334lvxl59wa72jax', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1qzYVQ:MFEA8gm7iU8dKw75vq-4Y01MMMx3ywsW8QZ6_lo_Ku8', '2023-11-19 08:29:16.059317'),
 	('w3a96o7ifb7wgx4gmlnojyv589rldtmn', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r5PPP:bMxRGvvT5sTXeZ9ysmkUmqgZ_M9_iqlocESGp85Ztcg', '2023-12-05 14:59:15.254269'),
 	('w5xlr07whmakw3fetecyqtt123fmzhnj', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r69Zk:mZ5dk6zRpDSTY75ItSyGDMFmsZ5ByCcwzR41lQH4iEo', '2023-12-07 16:17:00.034515'),
@@ -6529,6 +6840,36 @@ INSERT IGNORE INTO `django_session` (`session_key`, `session_data`, `expire_date
 	('z4x7h221elwnshxcv6fukrxxieuo7u3r', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r6Add:UROztA4U_OTnGVaWkiTdEtcKoyQ78o0yUErSnRek8So', '2023-12-07 17:25:05.797586'),
 	('zdljd60lgjwswawt7pdo1mksc1b2zrmk', '.eJxVjDsOwjAQBe_iGln-reOlpOcM1tre4ABypDipEHeHSCmgfTPzXiLStta4dV7iVMRZaBCn3zFRfnDbSblTu80yz21dpiR3RR60y-tc-Hk53L-DSr1-azMo9M5CsKwdeUBGG3Qw7Mh6b7wZkAJoZkSFWJRRJYMdxxSAg3NevD-_VTZ_:1qzZCA:hmn_3dlSNGI_AAUeLIGZFimmL8HKmAIsdrgL_au3I_k', '2023-11-19 09:13:26.551926'),
 	('zw73uqt7cf08hzmh3aroey00dcd1zb7o', '.eJxVjDsOwyAQBe9CHSGw-aZM7zOghV2CkwgkY1dR7h5bcpG0b2bemwXY1hK2TkuYkV2ZHNnld4yQnlQPgg-o98ZTq-syR34o_KSdTw3pdTvdv4MCvez1YIS0grxR5B2RlDZJL9CpGLN1xow5OcqaxqgHRA1Wg4k7x6y9wpzZ5wv6KDiD:1r2q2Q:b_d3lHNn23FxHtSbUJcJlrkUaUh9cC9hBtt5cYDrotc', '2023-11-28 12:48:54.932368');
+
+-- Dumping structure for table bengomall.django_site
+CREATE TABLE IF NOT EXISTS `django_site` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `domain` varchar(100) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `django_site_domain_a2e37b91_uniq` (`domain`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.django_site: ~1 rows (approximately)
+INSERT IGNORE INTO `django_site` (`id`, `domain`, `name`) VALUES
+	(2, 'https://www.yogisdelight.co.ke/login/', 'yogis main');
+
+-- Dumping structure for table bengomall.employees
+CREATE TABLE IF NOT EXISTS `employees` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `national_id` varchar(10) NOT NULL,
+  `salary` int unsigned NOT NULL,
+  `position_id` int DEFAULT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  KEY `employees_position_id_ae4fa2b1_fk_auth_group_id` (`position_id`),
+  CONSTRAINT `employees_position_id_ae4fa2b1_fk_auth_group_id` FOREIGN KEY (`position_id`) REFERENCES `auth_group` (`id`),
+  CONSTRAINT `employees_user_id_c7f7a3f4_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`),
+  CONSTRAINT `employees_chk_1` CHECK ((`salary` >= 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.employees: ~0 rows (approximately)
 
 -- Dumping structure for table bengomall.human_resource_addressbook
 CREATE TABLE IF NOT EXISTS `human_resource_addressbook` (
@@ -6550,7 +6891,7 @@ CREATE TABLE IF NOT EXISTS `human_resource_addressbook` (
   CONSTRAINT `human_resource_addre_region_id_cc146e3a_fk_human_res` FOREIGN KEY (`region_id`) REFERENCES `human_resource_deliveryregions` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.human_resource_addressbook: ~0 rows (approximately)
+-- Dumping data for table bengomall.human_resource_addressbook: ~2 rows (approximately)
 INSERT IGNORE INTO `human_resource_addressbook` (`id`, `address_label`, `phone`, `other_phone`, `postal_code`, `default_address`, `city_id`, `customer_id`, `region_id`) VALUES
 	(1, 'my address 1', '07000043578', '07000043578', '57-40100', 0, 1, 1, 2),
 	(2, 'address1', '+254743793901', '+254743793901', '57-40100', 1, 1, 1, 2);
@@ -6567,7 +6908,7 @@ CREATE TABLE IF NOT EXISTS `human_resource_businessaddress` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.human_resource_businessaddress: ~0 rows (approximately)
+-- Dumping data for table bengomall.human_resource_businessaddress: ~1 rows (approximately)
 INSERT IGNORE INTO `human_resource_businessaddress` (`id`, `state`, `city`, `box`, `street_or_road`, `phone`, `other_phone`) VALUES
 	(1, 'Nyanza', 'Kisumu', '00100-397', '15-40100', '07000043578', '07000043578');
 
@@ -6580,7 +6921,7 @@ CREATE TABLE IF NOT EXISTS `human_resource_customer` (
   CONSTRAINT `human_resource_custo_user_id_82f2f18d_fk_authmanag` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.human_resource_customer: ~0 rows (approximately)
+-- Dumping data for table bengomall.human_resource_customer: ~1 rows (approximately)
 INSERT IGNORE INTO `human_resource_customer` (`id`, `user_id`) VALUES
 	(1, 15);
 
@@ -6615,7 +6956,7 @@ CREATE TABLE IF NOT EXISTS `human_resource_employee` (
   CONSTRAINT `human_resource_employee_chk_1` CHECK ((`salary` >= 0))
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.human_resource_employee: ~0 rows (approximately)
+-- Dumping data for table bengomall.human_resource_employee: ~1 rows (approximately)
 INSERT IGNORE INTO `human_resource_employee` (`id`, `national_id`, `salary`, `position_id`, `user_id`) VALUES
 	(1, '43337878', 15000, 3, 17);
 
@@ -6636,7 +6977,7 @@ CREATE TABLE IF NOT EXISTS `human_resource_pickupstations` (
   CONSTRAINT `human_resource_pickupstations_chk_1` CHECK ((`shipping_charge` >= 0))
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.human_resource_pickupstations: ~0 rows (approximately)
+-- Dumping data for table bengomall.human_resource_pickupstations: ~1 rows (approximately)
 INSERT IGNORE INTO `human_resource_pickupstations` (`id`, `pickup_location`, `description`, `open_hours`, `payment_options`, `google_pin`, `helpline`, `shipping_charge`, `region_id`) VALUES
 	(1, 'Old Nation', 'Old nation building first floor, room b9', 'Mon-Fri 0800hrs - 1700hrs;Sat 0800hrs - 1300hrs', 'MPESA On Delivery, Cards', 'https://goo.gl/maps/p2QAwb7jbmxuJcb36', '076353535353', 85, 2);
 
@@ -6689,6 +7030,261 @@ INSERT IGNORE INTO `human_resource_supplier_delivery_regions` (`id`, `supplier_i
 	(1, 1, 1),
 	(2, 2, 1),
 	(3, 2, 2);
+
+-- Dumping structure for table bengomall.inventory
+CREATE TABLE IF NOT EXISTS `inventory` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `stock_level` int unsigned NOT NULL,
+  `reorder_level` int unsigned NOT NULL,
+  `usage` varchar(20) DEFAULT NULL,
+  `sku` varchar(100) NOT NULL,
+  `serial` varchar(100) NOT NULL,
+  `availability` varchar(20) NOT NULL,
+  `is_new_arrival` tinyint(1) NOT NULL,
+  `is_favorite` tinyint(1) NOT NULL,
+  `is_flash_sale` tinyint(1) NOT NULL,
+  `is_deal_of_the_day` tinyint(1) NOT NULL,
+  `is_top_pick` tinyint(1) NOT NULL,
+  `color_id` bigint DEFAULT NULL,
+  `product_id` bigint NOT NULL,
+  `size_id` bigint DEFAULT NULL,
+  `supplier_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sku` (`sku`),
+  UNIQUE KEY `serial` (`serial`),
+  KEY `inventory_color_id_4e8e833d_fk_product_productcolor_id` (`color_id`),
+  KEY `inventory_product_id_7c50457a_fk_products_id` (`product_id`),
+  KEY `inventory_size_id_662ffc24_fk_product_productsize_id` (`size_id`),
+  KEY `inventory_supplier_id_a153dd16_fk_suppliers_id` (`supplier_id`),
+  CONSTRAINT `inventory_color_id_4e8e833d_fk_product_productcolor_id` FOREIGN KEY (`color_id`) REFERENCES `product_productcolor` (`id`),
+  CONSTRAINT `inventory_product_id_7c50457a_fk_products_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
+  CONSTRAINT `inventory_size_id_662ffc24_fk_product_productsize_id` FOREIGN KEY (`size_id`) REFERENCES `product_productsize` (`id`),
+  CONSTRAINT `inventory_supplier_id_a153dd16_fk_suppliers_id` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`),
+  CONSTRAINT `inventory_chk_1` CHECK ((`stock_level` >= 0)),
+  CONSTRAINT `inventory_chk_2` CHECK ((`reorder_level` >= 0))
+) ENGINE=InnoDB AUTO_INCREMENT=219 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.inventory: ~218 rows (approximately)
+INSERT IGNORE INTO `inventory` (`id`, `stock_level`, `reorder_level`, `usage`, `sku`, `serial`, `availability`, `is_new_arrival`, `is_favorite`, `is_flash_sale`, `is_deal_of_the_day`, `is_top_pick`, `color_id`, `product_id`, `size_id`, `supplier_id`) VALUES
+	(1, 3, 5, 'New', '03d5c6c', '126d39e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1133, 696, NULL),
+	(2, 1, 5, 'New', '1ff1a16', '164004676211', 'In Stock', 1, 0, 1, 1, 1, NULL, 1134, 696, NULL),
+	(3, 10, 5, 'New', '288cb8b', '9d72111', 'In Stock', 1, 0, 1, 1, 1, NULL, 1135, 697, NULL),
+	(4, 10, 5, 'New', '355d9c1', '080aef5', 'In Stock', 1, 0, 1, 1, 1, NULL, 1135, 698, NULL),
+	(5, 10, 5, 'New', '4f41880', 'b306657', 'In Stock', 1, 0, 1, 1, 1, NULL, 1135, 699, NULL),
+	(6, 12, 5, 'New', '5c249f7', '31dd387', 'In Stock', 1, 0, 1, 1, 1, NULL, 1136, 700, NULL),
+	(7, 12, 5, 'New', '645f6af', '47337b6', 'In Stock', 1, 0, 1, 1, 1, NULL, 1136, 701, NULL),
+	(8, 4, 5, 'New', '718eb1b', '6531543', 'In Stock', 1, 0, 1, 1, 1, NULL, 1133, 699, NULL),
+	(9, 5, 5, 'New', '8566971', '00d5bfc', 'In Stock', 1, 0, 1, 1, 1, NULL, 1137, 699, NULL),
+	(10, 3, 5, 'New', '976c390', 'd44902a', 'In Stock', 1, 0, 1, 1, 1, NULL, 1138, 702, NULL),
+	(11, 2, 5, 'New', '106c271c', '0e83ad3', 'In Stock', 1, 0, 1, 1, 1, NULL, 1139, 696, NULL),
+	(12, 2, 5, 'New', '111dea1c', '164004676228', 'In Stock', 1, 0, 1, 1, 1, NULL, 1134, 699, NULL),
+	(13, 5, 5, 'New', '1259ffc1', '1f33281', 'In Stock', 1, 0, 1, 1, 1, NULL, 1133, 703, NULL),
+	(14, 6, 5, 'New', '13211c58', '008677006039', 'In Stock', 1, 0, 1, 1, 1, NULL, 1140, 704, NULL),
+	(15, 5, 5, 'New', '149ebf3e', '69eca8c', 'In Stock', 1, 0, 1, 1, 1, NULL, 1141, 705, NULL),
+	(16, 1, 5, 'New', '157790c2', '161117772038', 'In Stock', 1, 0, 1, 1, 1, NULL, 1142, 696, NULL),
+	(17, 1, 5, 'New', '162fd887', '54be792', 'In Stock', 1, 0, 1, 1, 1, NULL, 1142, 696, NULL),
+	(18, 25, 5, 'New', '17c5c0d9', '8a160cb', 'In Stock', 1, 0, 1, 1, 1, NULL, 1143, 696, NULL),
+	(19, 12, 5, 'New', '18122e3a', '161113940141', 'In Stock', 1, 0, 1, 1, 1, NULL, 1144, 706, NULL),
+	(20, 50, 5, 'New', '19e0adda', '106c8b8', 'In Stock', 1, 0, 1, 1, 1, NULL, 1145, 696, NULL),
+	(21, 50, 5, 'New', '20f4cdd0', 'e53fd8e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1145, 698, NULL),
+	(22, 50, 5, 'New', '219b96d6', 'a6925c2', 'In Stock', 1, 0, 1, 1, 1, NULL, 1145, 699, NULL),
+	(23, 6, 5, 'New', '22d1afe8', '6db2ff8', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 707, NULL),
+	(24, 2, 5, 'New', '23e234a6', '161102061192', 'In Stock', 1, 0, 1, 1, 1, NULL, 1147, 702, NULL),
+	(25, 10, 5, 'New', '247920f0', '0a0000f', 'In Stock', 1, 0, 1, 1, 1, NULL, 1148, 705, NULL),
+	(26, 12, 5, 'New', '256530ac', '009627050003', 'In Stock', 1, 0, 1, 1, 1, NULL, 1149, 696, NULL),
+	(27, 3, 5, 'New', '26d59a08', '161104402030', 'In Stock', 1, 0, 1, 1, 1, NULL, 1150, 702, NULL),
+	(28, 12, 5, 'New', '273289aa', '009627050010', 'In Stock', 1, 0, 1, 1, 1, NULL, 1149, 706, NULL),
+	(29, 3, 5, 'New', '28897c78', 'dfd8574', 'In Stock', 1, 0, 1, 1, 1, NULL, 1139, 699, NULL),
+	(30, 20, 5, 'New', '2984ac3d', '5cc89e0', 'In Stock', 1, 0, 1, 1, 1, NULL, 1151, 705, NULL),
+	(31, 10, 5, 'New', '3014acd5', '161107777432', 'In Stock', 1, 0, 1, 1, 1, NULL, 1152, 696, NULL),
+	(32, 25, 5, 'New', '318405cc', '9ea0bf7', 'In Stock', 1, 0, 1, 1, 1, NULL, 1153, 696, NULL),
+	(33, 25, 5, 'New', '32f02a70', '6b9f910', 'In Stock', 1, 0, 1, 1, 1, NULL, 1153, 698, NULL),
+	(34, 6, 5, 'New', '33de91cb', '161115170256', 'In Stock', 1, 0, 1, 1, 1, NULL, 1154, 708, NULL),
+	(35, 25, 5, 'New', '347bdc31', '851efbb', 'In Stock', 1, 0, 1, 1, 1, NULL, 1153, 699, NULL),
+	(36, 12, 5, 'New', '35e8e9d1', 'b38ab1e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1138, 709, NULL),
+	(37, 4, 5, 'New', '369f0a8c', '164004676235', 'In Stock', 1, 0, 1, 1, 1, NULL, 1134, 698, NULL),
+	(38, 5, 5, 'New', '3764739b', '18debdf', 'In Stock', 1, 0, 1, 1, 1, NULL, 1155, 710, NULL),
+	(39, 30, 5, 'New', '385e9de4', '075ea29', 'In Stock', 1, 0, 1, 1, 1, NULL, 1156, 711, NULL),
+	(40, 4, 5, 'New', '399eb125', '60b5c96', 'In Stock', 1, 0, 1, 1, 1, NULL, 1157, 712, NULL),
+	(41, 12, 5, 'New', '409a84af', '879938e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 713, NULL),
+	(42, 12, 5, 'New', '41ad3434', '0790197', 'In Stock', 1, 0, 1, 1, 1, NULL, 1158, 705, NULL),
+	(43, 12, 5, 'New', '42aa044b', 'e5aaa29', 'In Stock', 1, 0, 1, 1, 1, NULL, 1159, 705, NULL),
+	(44, 12, 5, 'New', '43bf752d', 'e3af9d9', 'In Stock', 1, 0, 1, 1, 1, NULL, 1160, 705, NULL),
+	(45, 6, 5, 'New', '44722948', '93808c3', 'In Stock', 1, 0, 1, 1, 1, NULL, 1161, 714, NULL),
+	(46, 12, 5, 'New', '456bc0db', '161107772222', 'In Stock', 1, 0, 1, 1, 1, NULL, 1142, 699, NULL),
+	(47, 25, 5, 'New', '4637c899', '7491df2', 'In Stock', 1, 0, 1, 1, 1, NULL, 1162, 696, NULL),
+	(48, 25, 5, 'New', '4713c3d8', '7ca175b', 'In Stock', 1, 0, 1, 1, 1, NULL, 1162, 698, NULL),
+	(49, 25, 5, 'New', '485fa3c5', '947ea7c', 'In Stock', 1, 0, 1, 1, 1, NULL, 1162, 699, NULL),
+	(50, 5, 5, 'New', '4916f094', '161114908751', 'In Stock', 1, 0, 1, 1, 1, NULL, 1163, 715, NULL),
+	(51, 24, 5, 'New', '503af7a5', '161113940134', 'In Stock', 1, 0, 1, 1, 1, NULL, 1144, 696, NULL),
+	(52, 3, 5, 'New', '511496c1', '161140402115', 'In Stock', 1, 0, 1, 1, 1, NULL, 1150, 709, NULL),
+	(53, 3, 5, 'New', '52dffe6a', '161104402016', 'In Stock', 1, 0, 1, 1, 1, NULL, 1150, 709, NULL),
+	(54, 12, 5, 'New', '531904bd', '6008549000972', 'In Stock', 1, 0, 1, 1, 1, NULL, 1164, 709, NULL),
+	(55, 15, 5, 'New', '54965434', '8ef735f', 'In Stock', 1, 0, 1, 1, 1, NULL, 1165, 705, NULL),
+	(56, 6, 5, 'New', '5557afb7', '164004723144', 'In Stock', 1, 0, 1, 1, 1, NULL, 1166, 705, NULL),
+	(57, 12, 5, 'New', '56f05f16', 'a16843c', 'In Stock', 1, 0, 1, 1, 1, NULL, 1167, 716, NULL),
+	(58, 12, 5, 'New', '572e5a91', '6678fb7', 'In Stock', 1, 0, 1, 1, 1, NULL, 1167, 717, NULL),
+	(59, 20, 5, 'New', '58f4f359', '161103941608', 'In Stock', 1, 0, 1, 1, 1, NULL, 1168, 708, NULL),
+	(60, 6, 5, 'New', '5978ed7c', '61614000', 'In Stock', 1, 0, 1, 1, 1, NULL, 1134, 718, NULL),
+	(61, 6, 5, 'New', '60738c56', '04b1f6e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1169, 718, NULL),
+	(62, 6, 5, 'New', '61a510a4', '164004676549', 'In Stock', 1, 0, 1, 1, 1, NULL, 1134, 716, NULL),
+	(63, 50, 5, 'New', '62635bcc', '47506b1', 'In Stock', 1, 0, 1, 1, 1, NULL, 1170, 705, NULL),
+	(64, 12, 5, 'New', '637f521b', '060608740253', 'In Stock', 1, 0, 1, 1, 1, NULL, 1171, 705, NULL),
+	(65, 24, 5, 'New', '640dcdb6', '54493353', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 709, NULL),
+	(66, 24, 5, 'New', '654271f3', '54491472', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(67, 24, 5, 'New', '660c75c3', '161103940182', 'In Stock', 1, 0, 1, 1, 1, NULL, 1172, 705, NULL),
+	(68, 24, 5, 'New', '67c155df', '40822938', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(69, 12, 5, 'New', '684296fa', '161104405680', 'In Stock', 1, 0, 1, 1, 1, NULL, 1173, 719, NULL),
+	(70, 12, 5, 'New', '695eb585', '164001166272', 'In Stock', 1, 0, 1, 1, 1, NULL, 1174, 709, NULL),
+	(71, 12, 5, 'New', '7090b051', 'a174da0', 'In Stock', 1, 0, 1, 1, 1, NULL, 1175, 705, NULL),
+	(72, 10, 5, 'New', '7145eb89', '161100930384', 'In Stock', 1, 0, 1, 1, 1, NULL, 1176, 718, NULL),
+	(73, 10, 5, 'New', '72a780a2', '161104470077', 'In Stock', 1, 0, 1, 1, 1, NULL, 1143, 696, NULL),
+	(74, 48, 5, 'New', '73d0ad55', 'ac113e8', 'In Stock', 1, 0, 1, 1, 1, NULL, 1177, 704, NULL),
+	(75, 48, 5, 'New', '74583d06', '161100910065', 'In Stock', 1, 0, 1, 1, 1, NULL, 1178, 705, NULL),
+	(76, 48, 5, 'New', '754ffa6f', '161100910119', 'In Stock', 1, 0, 1, 1, 1, NULL, 1179, 705, NULL),
+	(77, 48, 5, 'New', '768fcecb', '161100910010', 'In Stock', 1, 0, 1, 1, 1, NULL, 1180, 705, NULL),
+	(78, 48, 5, 'New', '77b5e5c3', '161100911024', 'In Stock', 1, 0, 1, 1, 1, NULL, 1181, 705, NULL),
+	(79, 12, 5, 'New', '7847185b', '9f7d72e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1182, 720, NULL),
+	(80, 12, 5, 'New', '79f90f9b', '54017719', 'In Stock', 1, 0, 1, 1, 1, NULL, 1183, 721, NULL),
+	(81, 12, 5, 'New', '80770991', '6008459000507', 'In Stock', 1, 0, 1, 1, 1, NULL, 1182, 719, NULL),
+	(82, 12, 5, 'New', '81b7dc8d', '161117770515', 'In Stock', 1, 0, 1, 1, 1, NULL, 1184, 719, NULL),
+	(83, 12, 5, 'New', '82aa47a3', '161117772281', 'In Stock', 1, 0, 1, 1, 1, NULL, 1185, 719, NULL),
+	(84, 12, 5, 'New', '838bd334', '161117773059', 'In Stock', 1, 0, 1, 1, 1, NULL, 1186, 719, NULL),
+	(85, 12, 5, 'New', '84a8fde8', 'd8a7d86', 'In Stock', 1, 0, 1, 1, 1, NULL, 1187, 720, NULL),
+	(86, 12, 5, 'New', '85bafd90', '6178777', 'In Stock', 1, 0, 1, 1, 1, NULL, 1187, 719, NULL),
+	(87, 12, 5, 'New', '86fff2f8', '42381198', 'In Stock', 1, 0, 1, 1, 1, NULL, 1188, 722, NULL),
+	(88, 24, 5, 'New', '87b61943', 'db18293', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 722, NULL),
+	(89, 12, 5, 'New', '88c38f0d', '3f21eb8', 'In Stock', 1, 0, 1, 1, 1, NULL, 1187, 709, NULL),
+	(90, 24, 5, 'New', '8942041f', '8ba03fa', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 709, NULL),
+	(91, 10, 5, 'New', '90092e68', '009629720065', 'In Stock', 1, 0, 1, 1, 1, NULL, 1189, 718, NULL),
+	(92, 10, 5, 'New', '9192ef2d', '161102750072', 'In Stock', 1, 0, 1, 1, 1, NULL, 1190, 716, NULL),
+	(93, 10, 5, 'New', '92222f1f', '161102750096', 'In Stock', 1, 0, 1, 1, 1, NULL, 1190, 704, NULL),
+	(94, 12, 5, 'New', '93bf3211', '009637635140970', 'In Stock', 1, 0, 1, 1, 1, NULL, 1191, 723, NULL),
+	(95, 20, 5, 'New', '9419af79', '8968612066', 'In Stock', 1, 0, 1, 1, 1, NULL, 1192, 724, NULL),
+	(96, 12, 5, 'New', '95498f40', '161105070009', 'In Stock', 1, 0, 1, 1, 1, NULL, 1193, 705, NULL),
+	(97, 12, 5, 'New', '96d9fa51', '008155002294', 'In Stock', 1, 0, 1, 1, 1, NULL, 1194, 701, NULL),
+	(98, 10, 5, 'New', '979a0ced', 'de424e5', 'In Stock', 1, 0, 1, 1, 1, NULL, 1195, 725, NULL),
+	(99, 24, 5, 'New', '98a1e610', '447b842', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 719, NULL),
+	(100, 40, 5, 'New', '99b96b87', '161115172830', 'In Stock', 1, 0, 1, 1, 1, NULL, 1196, 726, NULL),
+	(101, 12, 5, 'New', '1001d0a5c', '161103943282', 'In Stock', 1, 0, 1, 1, 1, NULL, 1197, 711, NULL),
+	(102, 12, 5, 'New', '101e13c16', '161103940274', 'In Stock', 1, 0, 1, 1, 1, NULL, 1197, 711, NULL),
+	(103, 12, 5, 'New', '102854efe', 'fce1d7d', 'In Stock', 1, 0, 1, 1, 1, NULL, 1157, 702, NULL),
+	(104, 10, 5, 'New', '1036f6e17', '008166340241', 'In Stock', 1, 0, 1, 1, 1, NULL, 1198, 727, NULL),
+	(105, 5, 5, 'New', '104afc675', '9ba4fdf', 'In Stock', 1, 0, 1, 1, 1, NULL, 1199, 705, NULL),
+	(106, 5, 5, 'New', '1059cede0', 'c0071f4', 'In Stock', 1, 0, 1, 1, 1, NULL, 1152, 728, NULL),
+	(107, 12, 5, 'New', '106aa2a3d', '30f381b', 'In Stock', 1, 0, 1, 1, 1, NULL, 1200, 705, NULL),
+	(108, 24, 5, 'New', '107ab1960', '7359089', 'In Stock', 1, 0, 1, 1, 1, NULL, 1201, 729, NULL),
+	(109, 12, 5, 'New', '1080e8d7e', 'ca3a176', 'In Stock', 1, 0, 1, 1, 1, NULL, 1202, 730, NULL),
+	(110, 6, 5, 'New', '109a870b4', 'cd71e69', 'In Stock', 1, 0, 1, 1, 1, NULL, 1152, 731, NULL),
+	(111, 10, 5, 'New', '110a73bb7', '161100930117', 'In Stock', 1, 0, 1, 1, 1, NULL, 1176, 704, NULL),
+	(112, 12, 5, 'New', '1113248be', '904bcf6', 'In Stock', 1, 0, 1, 1, 1, NULL, 1203, 701, NULL),
+	(113, 21, 5, 'New', '112282a58', '164001166289', 'In Stock', 1, 0, 1, 1, 1, NULL, 1174, 720, NULL),
+	(114, 12, 5, 'New', '1132be32b', '164002595583', 'In Stock', 1, 0, 1, 1, 1, NULL, 1204, 704, NULL),
+	(115, 50, 5, 'New', '1149e3423', '008686340230', 'In Stock', 1, 0, 1, 1, 1, NULL, 1205, 722, NULL),
+	(116, 50, 5, 'New', '115b0deca', '050242000554', 'In Stock', 1, 0, 1, 1, 1, NULL, 1206, 722, NULL),
+	(117, 36, 5, 'New', '116ba8f81', '161103944128', 'In Stock', 1, 0, 1, 1, 1, NULL, 1207, 732, NULL),
+	(118, 36, 5, 'New', '117fb28d8', '161103942643', 'In Stock', 1, 0, 1, 1, 1, NULL, 1208, 732, NULL),
+	(119, 6, 5, 'New', '1189f8474', '161106962662', 'In Stock', 1, 0, 1, 1, 1, NULL, 1209, 733, NULL),
+	(120, 24, 5, 'New', '119437fc0', '84d3d40', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(121, 12, 5, 'New', '120579231', 'a32fae0', 'In Stock', 1, 0, 1, 1, 1, NULL, 1210, 705, NULL),
+	(122, 40, 5, 'New', '121991ee0', '161101280037', 'In Stock', 1, 0, 1, 1, 1, NULL, 1211, 734, NULL),
+	(123, 40, 5, 'New', '122772280', '161101280013', 'In Stock', 1, 0, 1, 1, 1, NULL, 1211, 699, NULL),
+	(124, 20, 5, 'New', '1230a818d', '008165007814', 'In Stock', 1, 0, 1, 1, 1, NULL, 1212, 735, NULL),
+	(125, 12, 5, 'New', '124cf913e', '161101537025', 'In Stock', 1, 0, 1, 1, 1, NULL, 1213, 736, NULL),
+	(126, 12, 5, 'New', '1252879e0', '161101536547', 'In Stock', 1, 0, 1, 1, 1, NULL, 1213, 736, NULL),
+	(127, 36, 5, 'New', '12646fba4', '622201699352', 'In Stock', 1, 0, 1, 1, 1, NULL, 1214, 737, NULL),
+	(128, 12, 5, 'New', '127a38874', 'aa201d8', 'In Stock', 1, 0, 1, 1, 1, NULL, 1215, 738, NULL),
+	(129, 24, 5, 'New', '128d86873', 'f10c71e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1157, 709, NULL),
+	(130, 24, 5, 'New', '12917ffc0', '54491069', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(131, 40, 5, 'New', '13082094a', '55aa9a4', 'In Stock', 1, 0, 1, 1, 1, NULL, 1216, 739, NULL),
+	(132, 6, 5, 'New', '1314dc4c4', '31bb1dc', 'In Stock', 1, 0, 1, 1, 1, NULL, 1142, 696, NULL),
+	(133, 6, 5, 'New', '1327f6392', '161106610709', 'In Stock', 1, 0, 1, 1, 1, NULL, 1217, 740, NULL),
+	(134, 6, 5, 'New', '133be8478', '161106610723', 'In Stock', 1, 0, 1, 1, 1, NULL, 1217, 741, NULL),
+	(135, 42, 5, 'New', '1348bd5b5', '9707b75', 'In Stock', 1, 0, 1, 1, 1, NULL, 1216, 742, NULL),
+	(136, 42, 5, 'New', '1354c5b4c', 'c523b31', 'In Stock', 1, 0, 1, 1, 1, NULL, 1216, 743, NULL),
+	(137, 24, 5, 'New', '1368ae721', '161104401507', 'In Stock', 1, 0, 1, 1, 1, NULL, 1150, 744, NULL),
+	(138, 36, 5, 'New', '13775479d', '164002695320', 'In Stock', 1, 0, 1, 1, 1, NULL, 1218, 745, NULL),
+	(139, 150, 5, 'New', '1388e7c86', '5abf585', 'In Stock', 1, 0, 1, 1, 1, NULL, 1219, 711, NULL),
+	(140, 150, 5, 'New', '139f44303', 'aba5f7d', 'In Stock', 1, 0, 1, 1, 1, NULL, 1135, 746, NULL),
+	(141, 12, 5, 'New', '140a54fcb', '1ba0308', 'In Stock', 1, 0, 1, 1, 1, NULL, 1220, 716, NULL),
+	(142, 12, 5, 'New', '14130dbe7', '161104400555', 'In Stock', 1, 0, 1, 1, 1, NULL, 1220, 704, NULL),
+	(143, 12, 5, 'New', '1427b94fc', '28b26c0', 'In Stock', 1, 0, 1, 1, 1, NULL, 1221, 705, NULL),
+	(144, 20, 5, 'New', '14389f0e8', '008165267492', 'In Stock', 1, 0, 1, 1, 1, NULL, 1212, 747, NULL),
+	(145, 20, 5, 'New', '144b66004', '0f5d478', 'In Stock', 1, 0, 1, 1, 1, NULL, 1212, 748, NULL),
+	(146, 12, 5, 'New', '145966bd1', '161100600270', 'In Stock', 1, 0, 1, 1, 1, NULL, 1222, 749, NULL),
+	(147, 12, 5, 'New', '146b91060', '161100600935', 'In Stock', 1, 0, 1, 1, 1, NULL, 1222, 704, NULL),
+	(148, 50, 5, 'New', '1479304d5', '168686200153', 'In Stock', 1, 0, 1, 1, 1, NULL, 1223, 750, NULL),
+	(149, 50, 5, 'New', '148edf468', '166000107522', 'In Stock', 1, 0, 1, 1, 1, NULL, 1224, 750, NULL),
+	(150, 5, 5, 'New', '1499b8e9d', '96310e7', 'In Stock', 1, 0, 1, 1, 1, NULL, 1225, 705, NULL),
+	(151, 5, 5, 'New', '15091ffd4', '73f95d7', 'In Stock', 1, 0, 1, 1, 1, NULL, 1226, 705, NULL),
+	(152, 24, 5, 'New', '151a59431', '6c9bc0e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(153, 12, 5, 'New', '152e86bb6', '6c9b097', 'In Stock', 1, 0, 1, 1, 1, NULL, 1227, 751, NULL),
+	(154, 50, 5, 'New', '1534c6685', '810c73f', 'In Stock', 1, 0, 1, 1, 1, NULL, 1228, 752, NULL),
+	(155, 12, 5, 'New', '1547df9b2', '009629720072', 'In Stock', 1, 0, 1, 1, 1, NULL, 1189, 704, NULL),
+	(156, 12, 5, 'New', '1558ad154', '161106962661', 'In Stock', 1, 0, 1, 1, 1, NULL, 1209, 733, NULL),
+	(157, 50, 5, 'New', '156c13e0c', '180976f', 'In Stock', 1, 0, 1, 1, 1, NULL, 1229, 705, NULL),
+	(158, 12, 5, 'New', '15744d6fe', '166e8c7', 'In Stock', 1, 0, 1, 1, 1, NULL, 1230, 753, NULL),
+	(159, 50, 5, 'New', '15807ecf1', 'dea934c', 'In Stock', 1, 0, 1, 1, 1, NULL, 1231, 705, NULL),
+	(160, 12, 5, 'New', '1590e6c22', '553ef01', 'In Stock', 1, 0, 1, 1, 1, NULL, 1136, 753, NULL),
+	(161, 12, 5, 'New', '160cf6779', '1b28996', 'In Stock', 1, 0, 1, 1, 1, NULL, 1232, 753, NULL),
+	(162, 12, 5, 'New', '161ab04d5', '94dacc7', 'In Stock', 1, 0, 1, 1, 1, NULL, 1232, 754, NULL),
+	(163, 12, 5, 'New', '16264b02d', '91a7a12', 'In Stock', 1, 0, 1, 1, 1, NULL, 1232, 701, NULL),
+	(164, 20, 5, 'New', '163f12e6b', '008165265962', 'In Stock', 1, 0, 1, 1, 1, NULL, 1212, 755, NULL),
+	(165, 20, 5, 'New', '1642e8015', '161101080019', 'In Stock', 1, 0, 1, 1, 1, NULL, 1212, 756, NULL),
+	(166, 96, 5, 'New', '165b4a3c6', '161110880099', 'In Stock', 1, 0, 1, 1, 1, NULL, 1233, 757, NULL),
+	(167, 12, 5, 'New', '166658498', '7e18c6e', 'In Stock', 1, 0, 1, 1, 1, NULL, 1234, 753, NULL),
+	(168, 12, 5, 'New', '16795bdf2', '161100913240', 'In Stock', 1, 0, 1, 1, 1, NULL, 1235, 751, NULL),
+	(169, 12, 5, 'New', '168bfc1fd', '162000046052', 'In Stock', 1, 0, 1, 1, 1, NULL, 1236, 705, NULL),
+	(170, 50, 5, 'New', '169c1af05', '161100916487', 'In Stock', 1, 0, 1, 1, 1, NULL, 1237, 705, NULL),
+	(171, 20, 5, 'New', '1703f38f9', '6af3802', 'In Stock', 1, 0, 1, 1, 1, NULL, 1238, 716, NULL),
+	(172, 50, 5, 'New', '171f21f71', '161100860155', 'In Stock', 1, 0, 1, 1, 1, NULL, 1239, 733, NULL),
+	(173, 50, 5, 'New', '1725aa416', '161101511636', 'In Stock', 1, 0, 1, 1, 1, NULL, 1240, 750, NULL),
+	(174, 50, 5, 'New', '173f0d937', '009611170274', 'In Stock', 1, 0, 1, 1, 1, NULL, 1241, 750, NULL),
+	(175, 50, 5, 'New', '17400ffad', 'cd2e7a6', 'In Stock', 1, 0, 1, 1, 1, NULL, 1242, 750, NULL),
+	(176, 20, 5, 'New', '175563318', '009629720102', 'In Stock', 1, 0, 1, 1, 1, NULL, 1189, 716, NULL),
+	(177, 50, 5, 'New', '176a8235d', 'badb4a9', 'In Stock', 1, 0, 1, 1, 1, NULL, 1243, 758, NULL),
+	(178, 50, 5, 'New', '177ef5f70', 'e84c338', 'In Stock', 1, 0, 1, 1, 1, NULL, 1244, 758, NULL),
+	(179, 50, 5, 'New', '17810ed7e', '161112464648', 'In Stock', 1, 0, 1, 1, 1, NULL, 1245, 759, NULL),
+	(180, 50, 5, 'New', '179badeb7', '161112464662', 'In Stock', 1, 0, 1, 1, 1, NULL, 1245, 760, NULL),
+	(181, 50, 5, 'New', '1808b9321', '161112464631', 'In Stock', 1, 0, 1, 1, 1, NULL, 1245, 761, NULL),
+	(182, 50, 5, 'New', '181a06889', '161112464679', 'In Stock', 1, 0, 1, 1, 1, NULL, 1245, 762, NULL),
+	(183, 50, 5, 'New', '182a18c38', '932709c', 'In Stock', 1, 0, 1, 1, 1, NULL, 1246, 705, NULL),
+	(184, 12, 5, 'New', '1831b173a', 'a4ffab1', 'In Stock', 1, 0, 1, 1, 1, NULL, 1230, 751, NULL),
+	(185, 60, 5, 'New', '1843b8984', '162000044454', 'In Stock', 1, 0, 1, 1, 1, NULL, 1247, 758, NULL),
+	(186, 60, 5, 'New', '185ea9971', '161103940649', 'In Stock', 1, 0, 1, 1, 1, NULL, 1248, 758, NULL),
+	(187, 60, 5, 'New', '186984024', '161103943725', 'In Stock', 1, 0, 1, 1, 1, NULL, 1249, 758, NULL),
+	(188, 100, 5, 'New', '187099d17', 'cc70b61', 'In Stock', 1, 0, 1, 1, 1, NULL, 1250, 758, NULL),
+	(189, 40, 5, 'New', '18859599c', '31b294f', 'In Stock', 1, 0, 1, 1, 1, NULL, 1196, 763, NULL),
+	(190, 40, 5, 'New', '1890509e7', '161115172847', 'In Stock', 1, 0, 1, 1, 1, NULL, 1196, 764, NULL),
+	(191, 40, 5, 'New', '1905ccc89', '161100912380', 'In Stock', 1, 0, 1, 1, 1, NULL, 1251, 765, NULL),
+	(192, 40, 5, 'New', '191dd1cc7', '53f3006', 'In Stock', 1, 0, 1, 1, 1, NULL, 1251, 705, NULL),
+	(193, 84, 5, 'New', '192034a9c', '75bd01a', 'In Stock', 1, 0, 1, 1, 1, NULL, 1252, 705, NULL),
+	(194, 107, 5, 'New', '193657c33', '1b67f9f', 'In Stock', 1, 0, 1, 1, 1, NULL, 1253, 705, NULL),
+	(195, 114, 5, 'New', '194f2c94c', 'c81d030', 'In Stock', 1, 0, 1, 1, 1, NULL, 1254, 705, NULL),
+	(196, 480, 5, 'New', '19595cf71', 'f6c1938', 'In Stock', 1, 0, 1, 1, 1, NULL, 1255, 696, NULL),
+	(197, 480, 5, 'New', '196cbc3f5', 'a043fa6', 'In Stock', 1, 0, 1, 1, 1, NULL, 1139, 698, NULL),
+	(198, 480, 5, 'New', '197279260', '1268d98', 'In Stock', 1, 0, 1, 1, 1, NULL, 1255, 698, NULL),
+	(199, 480, 5, 'New', '198a727db', 'c56876a', 'In Stock', 1, 0, 1, 1, 1, NULL, 1255, 699, NULL),
+	(200, 1, 5, 'New', '199071304', '449000028921', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 711, NULL),
+	(201, 2, 5, 'New', '200e231a1', 'f96f55d', 'In Stock', 1, 0, 1, 1, 1, NULL, 1256, 711, NULL),
+	(202, 3, 5, 'New', '20134ce8e', '449000028938', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 711, NULL),
+	(203, 2, 5, 'New', '20275183b', '449000090096', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 711, NULL),
+	(204, 2, 5, 'New', '20349b568', 'a637cd1', 'In Stock', 1, 0, 1, 1, 1, NULL, 1257, 711, NULL),
+	(205, 5, 5, 'New', '2046c763f', '449000113467', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 713, NULL),
+	(206, 2, 5, 'New', '205b3485c', '6926d03', 'In Stock', 1, 0, 1, 1, 1, NULL, 1258, 696, NULL),
+	(207, 2, 5, 'New', '20692430a', 'f742904', 'In Stock', 1, 0, 1, 1, 1, NULL, 1259, 696, NULL),
+	(208, 3, 5, 'New', '20749878d', '82f588d', 'In Stock', 1, 0, 1, 1, 1, NULL, 1260, 696, NULL),
+	(209, 12, 5, 'New', '208544632', '1f58404', 'In Stock', 1, 0, 1, 1, 1, NULL, 1227, 753, NULL),
+	(210, 8, 5, 'New', '209d92f58', '0c17f1c', 'In Stock', 1, 0, 1, 1, 1, NULL, 1143, 698, NULL),
+	(211, 8, 5, 'New', '210313998', '6c139dc', 'In Stock', 1, 0, 1, 1, 1, NULL, 1143, 706, NULL),
+	(212, 4, 5, 'New', '211a8e5b4', '449000004864', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 722, NULL),
+	(213, 12, 5, 'New', '21291de24', '008155007626', 'In Stock', 1, 0, 1, 1, 1, NULL, 1194, 700, NULL),
+	(214, 41, 5, 'New', '213ccc21a', '472e592', 'In Stock', 1, 0, 1, 1, 1, NULL, 1143, 699, NULL),
+	(215, 2, 5, 'New', '214cdb752', '5b4699b', 'In Stock', 1, 0, 1, 1, 1, NULL, 1143, 699, NULL),
+	(216, 1, 5, 'New', '2154765bd', '9ffde05', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(217, 4, 5, 'New', '216424005', '449000022752', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL),
+	(218, 2, 5, 'New', '217fb08c3', '449000028976', 'In Stock', 1, 0, 1, 1, 1, NULL, 1146, 705, NULL);
+
 -- Dumping structure for table bengomall.invoices
 CREATE TABLE IF NOT EXISTS `invoices` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -6700,13 +7296,13 @@ CREATE TABLE IF NOT EXISTS `invoices` (
   `customer_id` bigint NOT NULL,
   `order_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `invoices_customer_id_de4a11fb_fk_human_resource_customer_id` (`customer_id`),
+  KEY `invoices_customer_id_de4a11fb_fk_customers_id` (`customer_id`),
   KEY `invoices_order_id_ebb2d34a_fk_order_id` (`order_id`),
-  CONSTRAINT `invoices_customer_id_de4a11fb_fk_human_resource_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `human_resource_customer` (`id`),
+  CONSTRAINT `invoices_customer_id_de4a11fb_fk_customers_id` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
   CONSTRAINT `invoices_order_id_ebb2d34a_fk_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.invoices: ~2 rows (approximately)
+-- Dumping data for table bengomall.invoices: ~4 rows (approximately)
 INSERT IGNORE INTO `invoices` (`id`, `invoice_id`, `created_at`, `updated_at`, `amount`, `status`, `customer_id`, `order_id`) VALUES
 	(3, '1699282510241', '2023-11-06 17:38:30.926164', NULL, 165.00, 'pending', 1, NULL),
 	(4, '1699692768419', '2023-11-11 11:35:27.014304', NULL, 265.00, 'pending', 1, NULL),
@@ -6784,9 +7380,9 @@ CREATE TABLE IF NOT EXISTS `main_categories_categories` (
   KEY `main_categories_categories_category_id_3ebc84a7_fk_categories_id` (`category_id`),
   CONSTRAINT `main_categories_cate_maincategory_id_578125fb_fk_main_cate` FOREIGN KEY (`maincategory_id`) REFERENCES `main_categories` (`id`),
   CONSTRAINT `main_categories_categories_category_id_3ebc84a7_fk_categories_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2468 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2240 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.main_categories_categories: ~109 rows (approximately)
+-- Dumping data for table bengomall.main_categories_categories: ~112 rows (approximately)
 INSERT IGNORE INTO `main_categories_categories` (`id`, `maincategory_id`, `category_id`) VALUES
 	(1814, 163, 344),
 	(1815, 164, 345),
@@ -6930,17 +7526,17 @@ CREATE TABLE IF NOT EXISTS `order` (
   `delivery_from_date` datetime(6) DEFAULT NULL,
   `delivery_to_date` datetime(6) DEFAULT NULL,
   `delivered_status` varchar(100) NOT NULL,
-  `delivery_address_id` bigint NOT NULL,
   `customer_id` bigint NOT NULL,
+  `delivery_address_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `order_customer_id_9da9253f_fk_human_resource_customer_id` (`customer_id`),
-  KEY `order_delivery_address_id_7ba39879_fk_human_res` (`delivery_address_id`),
-  CONSTRAINT `order_customer_id_9da9253f_fk_human_resource_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `human_resource_customer` (`id`),
-  CONSTRAINT `order_delivery_address_id_7ba39879_fk_human_res` FOREIGN KEY (`delivery_address_id`) REFERENCES `human_resource_pickupstations` (`id`)
+  KEY `order_customer_id_9da9253f_fk_customers_id` (`customer_id`),
+  KEY `order_delivery_address_id_7ba39879_fk_pickup_stattions_id` (`delivery_address_id`),
+  CONSTRAINT `order_customer_id_9da9253f_fk_customers_id` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
+  CONSTRAINT `order_delivery_address_id_7ba39879_fk_pickup_stattions_id` FOREIGN KEY (`delivery_address_id`) REFERENCES `pickup_stattions` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.order: ~0 rows (approximately)
-INSERT IGNORE INTO `order` (`id`, `order_id`, `created_at`, `order_amount`, `payment_status`, `confirm_status`, `dispatch_status`, `delivery_from_date`, `delivery_to_date`, `delivered_status`, `delivery_address_id`, `customer_id`) VALUES
+-- Dumping data for table bengomall.order: ~2 rows (approximately)
+INSERT IGNORE INTO `order` (`id`, `order_id`, `created_at`, `order_amount`, `payment_status`, `confirm_status`, `dispatch_status`, `delivery_from_date`, `delivery_to_date`, `delivered_status`, `customer_id`, `delivery_address_id`) VALUES
 	(11, '1699963075431', '2023-11-14 14:40:43.043080', 79225.00, 'pending', 'pending', 'pending', NULL, NULL, 'pending', 1, 1),
 	(12, '1701110507167', '2023-11-27 21:27:35.412401', 885.00, 'pending', 'pending', 'pending', NULL, NULL, 'pending', 1, 1);
 
@@ -6959,9 +7555,45 @@ CREATE TABLE IF NOT EXISTS `orderitems` (
   CONSTRAINT `orderitems_stock_id_d2006ed2_fk_inventory_id` FOREIGN KEY (`stock_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.orderitems: ~0 rows (approximately)
+-- Dumping data for table bengomall.orderitems: ~1 rows (approximately)
 INSERT IGNORE INTO `orderitems` (`id`, `retail_price`, `quantity`, `total`, `order_id`, `stock_id`) VALUES
 	(14, 800.00, 1, 800, 12, 2122);
+
+-- Dumping structure for table bengomall.pickup_stattions
+CREATE TABLE IF NOT EXISTS `pickup_stattions` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `pickup_location` varchar(255) NOT NULL,
+  `description` longtext,
+  `open_hours` varchar(255) NOT NULL,
+  `payment_options` varchar(500) NOT NULL,
+  `google_pin` varchar(1500) NOT NULL,
+  `helpline` varchar(20) NOT NULL,
+  `shipping_charge` bigint unsigned NOT NULL,
+  `region_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pickup_stattions_region_id_9b0663f3_fk_delivery_regions_id` (`region_id`),
+  CONSTRAINT `pickup_stattions_region_id_9b0663f3_fk_delivery_regions_id` FOREIGN KEY (`region_id`) REFERENCES `delivery_regions` (`id`),
+  CONSTRAINT `pickup_stattions_chk_1` CHECK ((`shipping_charge` >= 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.pickup_stattions: ~0 rows (approximately)
+
+-- Dumping structure for table bengomall.post_comments
+CREATE TABLE IF NOT EXISTS `post_comments` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `comment` longtext NOT NULL,
+  `post_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `post_comments_post_id_e17f8125_fk_blog_posts_id` (`post_id`),
+  KEY `post_comments_user_id_540f5634_fk_authmanagement_myuser_id` (`user_id`),
+  CONSTRAINT `post_comments_post_id_e17f8125_fk_blog_posts_id` FOREIGN KEY (`post_id`) REFERENCES `blog_posts` (`id`),
+  CONSTRAINT `post_comments_user_id_540f5634_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.post_comments: ~1 rows (approximately)
+INSERT IGNORE INTO `post_comments` (`id`, `comment`, `post_id`, `user_id`) VALUES
+	(2, 'Awesome', 2, 17);
 
 -- Dumping structure for table bengomall.productimages
 CREATE TABLE IF NOT EXISTS `productimages` (
@@ -6971,9 +7603,9 @@ CREATE TABLE IF NOT EXISTS `productimages` (
   PRIMARY KEY (`id`),
   KEY `productimages_product_id_c598e50d_fk_products_id` (`product_id`),
   CONSTRAINT `productimages_product_id_c598e50d_fk_products_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3530 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3839 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.productimages: ~309 rows (approximately)
+-- Dumping data for table bengomall.productimages: ~622 rows (approximately)
 INSERT IGNORE INTO `productimages` (`id`, `image`, `product_id`) VALUES
 	(3217, 'products/20231120/Honey_2.jpeg', 1133),
 	(3218, 'products/20231120/Honey_1.jpeg', 1133),
@@ -7287,7 +7919,316 @@ INSERT IGNORE INTO `productimages` (`id`, `image`, `product_id`) VALUES
 	(3526, 'products/20231127/slider2.jpg', 1260),
 	(3527, 'products/20231127/slider3.jpg', 1259),
 	(3528, 'products/20231127/slider2_BF8VOd4.jpg', 1261),
-	(3529, 'products/20231127/slider3_IBzn9Ke.jpg', 1261);
+	(3529, 'products/20231127/slider3_IBzn9Ke.jpg', 1261),
+	(3530, 'products/20231218/Honey_2.jpeg', 1133),
+	(3531, 'products/20231218/Honey_1.jpeg', 1133),
+	(3532, 'products/20231218/blueband.jpeg', 1134),
+	(3533, 'products/20231218/blueband2.jpeg', 1134),
+	(3534, 'products/20231218/broilers.jpeg', 1135),
+	(3535, 'products/20231218/broilers_uYsBkwj.jpeg', 1135),
+	(3536, 'products/20231218/broilers_m4Nz0Yf.jpeg', 1135),
+	(3537, 'products/20231218/Omo.jpeg', 1136),
+	(3538, 'products/20231218/Omo_jYVyUA8.jpeg', 1136),
+	(3539, 'products/20231218/Honey_2_JgJ4XBL.jpeg', 1133),
+	(3540, 'products/20231218/Honey_1_gGFPvc4.jpeg', 1133),
+	(3541, 'products/20231218/Sausages.jpeg', 1137),
+	(3542, 'products/20231218/fresh_fri_oil.jpg', 1138),
+	(3543, 'products/20231218/kimbo_cooking_fat.jpeg', 1139),
+	(3544, 'products/20231218/kimbo_coocking_fat.jpg', 1139),
+	(3545, 'products/20231218/blueband_vsa4knH.jpeg', 1134),
+	(3546, 'products/20231218/blueband2_ecQ0SLD.jpeg', 1134),
+	(3547, 'products/20231218/Honey_2_8eBz6r7.jpeg', 1133),
+	(3548, 'products/20231218/Honey_1_oAw3ldo.jpeg', 1133),
+	(3549, 'products/20231218/Arimis.jpeg', 1140),
+	(3550, 'products/20231218/Kamande.jpg', 1141),
+	(3551, 'products/20231218/Kamande_2.jpg', 1141),
+	(3552, 'products/20231218/Msafi_Powder.jpeg', 1142),
+	(3553, 'products/20231218/Baking_Powder.jpg', 1142),
+	(3554, 'products/20231218/Msafi_Powder_2nrG1Hr.jpeg', 1142),
+	(3555, 'products/20231218/Baking_Powder_BUwJ2l5.jpg', 1142),
+	(3556, 'products/20231218/sugar.jpeg', 1143),
+	(3557, 'products/20231218/Unga_Chapati_Ajab.jpeg', 1144),
+	(3558, 'products/20231218/Unga_Chapati.jpeg', 1144),
+	(3559, 'products/20231218/Premium_Pishori_Rice.jpeg', 1145),
+	(3560, 'products/20231218/Pishori_rice.jpg', 1145),
+	(3561, 'products/20231218/Premium_Pishori_Rice_t5055yy.jpeg', 1145),
+	(3562, 'products/20231218/Pishori_rice_nnYAw3b.jpg', 1145),
+	(3563, 'products/20231218/Premium_Pishori_Rice_mwJeRzG.jpeg', 1145),
+	(3564, 'products/20231218/Pishori_rice_gGjxyBz.jpg', 1145),
+	(3565, 'products/20231218/other.png', 1146),
+	(3566, 'products/20231218/Savannah_Cocopine.jpeg', 1147),
+	(3567, 'products/20231218/Yellow_Beans.jpeg', 1148),
+	(3568, 'products/20231218/Unga_Ugali_jembe.jpeg', 1149),
+	(3569, 'products/20231218/Unga_Ugali_jogoo.jpeg', 1149),
+	(3570, 'products/20231218/Quencher_Pineapple.jpeg', 1150),
+	(3571, 'products/20231218/Quencher.jpeg', 1150),
+	(3572, 'products/20231218/Unga_Ugali_jembe_shMRsGg.jpeg', 1149),
+	(3573, 'products/20231218/Unga_Ugali_jogoo_Lwb9EBN.jpeg', 1149),
+	(3574, 'products/20231218/kimbo_cooking_fat_umacErl.jpeg', 1139),
+	(3575, 'products/20231218/kimbo_coocking_fat_CMyPwBp.jpg', 1139),
+	(3576, 'products/20231218/yoghurt.jpg', 1151),
+	(3577, 'products/20231218/msafi_bar_soap.jpg', 1152),
+	(3578, 'products/20231218/Msafi_Powder_hZ31EU4.jpeg', 1152),
+	(3579, 'products/20231218/Premium_Pishori_Rice_qD29jqd.jpeg', 1153),
+	(3580, 'products/20231218/imported_rice.jpg', 1153),
+	(3581, 'products/20231218/Premium_Pishori_Rice_2a9AbYC.jpeg', 1153),
+	(3582, 'products/20231218/imported_rice_dfnO2yw.jpg', 1153),
+	(3583, 'products/20231218/Sunlight_Powder.jpeg', 1154),
+	(3584, 'products/20231218/Premium_Pishori_Rice_lQJQhYP.jpeg', 1153),
+	(3585, 'products/20231218/imported_rice_d13GHdD.jpg', 1153),
+	(3586, 'products/20231218/fresh_fri_oil_w9GDwW8.jpg', 1138),
+	(3587, 'products/20231218/blueband_NYiCcPK.jpeg', 1134),
+	(3588, 'products/20231218/blueband2_VKXLTGd.jpeg', 1134),
+	(3589, 'products/20231218/Ndengu.jpeg', 1155),
+	(3590, 'products/20231218/other_cJziaxN.png', 1156),
+	(3591, 'products/20231218/water.jpeg', 1157),
+	(3592, 'products/20231218/other_k8U5kUa.png', 1146),
+	(3593, 'products/20231218/Bread.jpg', 1158),
+	(3594, 'products/20231218/Mandazi.jpeg', 1159),
+	(3595, 'products/20231218/Ngumu.jpeg', 1160),
+	(3596, 'products/20231218/Always.jpg', 1161),
+	(3597, 'products/20231218/Always_2.jpg', 1161),
+	(3598, 'products/20231218/Msafi_Powder_vMEh3Q4.jpeg', 1142),
+	(3599, 'products/20231218/Baking_Powder_2LlxXVx.jpg', 1142),
+	(3600, 'products/20231218/biryani_rice.jpg', 1162),
+	(3601, 'products/20231218/biryani_rice_2.jpg', 1162),
+	(3602, 'products/20231218/biryani_rice_ZZQ3olq.jpg', 1162),
+	(3603, 'products/20231218/biryani_rice_2_yq7GVmH.jpg', 1162),
+	(3604, 'products/20231218/biryani_rice_qhNkn4O.jpg', 1162),
+	(3605, 'products/20231218/biryani_rice_2_n7VOKF0.jpg', 1162),
+	(3606, 'products/20231218/bella_baby_wipes.jpg', 1163),
+	(3607, 'products/20231218/softcare_baby_wipes.jpg', 1163),
+	(3608, 'products/20231218/Unga_Chapati_Ajab_epgqjS9.jpeg', 1144),
+	(3609, 'products/20231218/Unga_Chapati_Lcl1oHi.jpeg', 1144),
+	(3610, 'products/20231218/Quencher_Pineapple_cLUMV8c.jpeg', 1150),
+	(3611, 'products/20231218/Quencher_AqdtaPg.jpeg', 1150),
+	(3612, 'products/20231218/Quencher_Pineapple_iSCb1X5.jpeg', 1150),
+	(3613, 'products/20231218/Quencher_qCnxqhw.jpeg', 1150),
+	(3614, 'products/20231218/Afia_Juice.jpeg', 1164),
+	(3615, 'products/20231218/Afia_Mixed.jpeg', 1164),
+	(3616, 'products/20231218/Fresh_Milk_3.jpg', 1165),
+	(3617, 'products/20231218/Fresh_Milk_2.jpg', 1165),
+	(3618, 'products/20231218/Softcare.jpg', 1166),
+	(3619, 'products/20231218/Softcare_Diaper.jpg', 1166),
+	(3620, 'products/20231218/Colgate.jpg', 1167),
+	(3621, 'products/20231218/Colgate_1.jpg', 1167),
+	(3622, 'products/20231218/Colgate_tdtoLd3.jpg', 1167),
+	(3623, 'products/20231218/Colgate_1_LAXATRh.jpg', 1167),
+	(3624, 'products/20231218/Spaghetti_Daawat.jpeg', 1168),
+	(3625, 'products/20231218/blueband_BJEvwY8.jpeg', 1134),
+	(3626, 'products/20231218/blueband2_pw9Z4W0.jpeg', 1134),
+	(3627, 'products/20231218/Jam.jpeg', 1169),
+	(3628, 'products/20231218/blueband_vhxrJxd.jpeg', 1134),
+	(3629, 'products/20231218/blueband2_8a94AlK.jpeg', 1134),
+	(3630, 'products/20231218/Fresh_Milk_-_Kabete_Dairies.jpeg', 1170),
+	(3631, 'products/20231218/Fresh_Milk_3_3orMww6.jpg', 1170),
+	(3632, 'products/20231218/Predator.jpeg', 1171),
+	(3633, 'products/20231218/other_U0dW14q.png', 1146),
+	(3634, 'products/20231218/other_dEH9SMY.png', 1146),
+	(3635, 'products/20231218/Nuvita_Biscuits.jpg', 1172),
+	(3636, 'products/20231218/other_XH61qR4.png', 1146),
+	(3637, 'products/20231218/Champ_Mango.jpeg', 1173),
+	(3638, 'products/20231218/kinangop_milk.jpeg', 1174),
+	(3639, 'products/20231218/Baking_Powder_vkgk62B.jpg', 1175),
+	(3640, 'products/20231218/Baking_Powder_2.jpg', 1175),
+	(3641, 'products/20231218/other_lZvXs0b.png', 1176),
+	(3642, 'products/20231218/sugar_SDmq4OW.jpeg', 1143),
+	(3643, 'products/20231218/crisps_assorted.jpg', 1177),
+	(3644, 'products/20231218/other_B0tZM5y.png', 1178),
+	(3645, 'products/20231218/Chilli_Lemon.jpeg', 1179),
+	(3646, 'products/20231218/other_mMhPVzN.png', 1180),
+	(3647, 'products/20231218/tomatoes.jpg', 1181),
+	(3648, 'products/20231218/Afia_Juice_TRuYSh9.jpeg', 1182),
+	(3649, 'products/20231218/minute_maid.jpg', 1183),
+	(3650, 'products/20231218/Afia_Juice_s9chdZp.jpeg', 1182),
+	(3651, 'products/20231218/Jooz_Orange.jpeg', 1184),
+	(3652, 'products/20231218/Jooz_Orange_wIU5WcK.jpeg', 1185),
+	(3653, 'products/20231218/Juo_Ukwaju.jpeg', 1186),
+	(3654, 'products/20231218/Afia_Mixed_H8eE0s2.jpeg', 1187),
+	(3655, 'products/20231218/Afia_Juice_AMYIDMb.jpeg', 1187),
+	(3656, 'products/20231218/Afia_Mixed_xMRLn75.jpeg', 1187),
+	(3657, 'products/20231218/Afia_Juice_C4TgGqT.jpeg', 1187),
+	(3658, 'products/20231218/Novida.jpeg', 1188),
+	(3659, 'products/20231218/other_zcGN9Hu.png', 1146),
+	(3660, 'products/20231218/Afia_Mixed_g7p2tDq.jpeg', 1187),
+	(3661, 'products/20231218/Afia_Juice_j2W8K9K.jpeg', 1187),
+	(3662, 'products/20231218/other_QGu61iO.png', 1146),
+	(3663, 'products/20231218/Ketepa_tea.jpg', 1189),
+	(3664, 'products/20231218/Eden_tea.jpg', 1190),
+	(3665, 'products/20231218/Eden_tea_nS7K8DW.jpg', 1190),
+	(3666, 'products/20231218/Bites_1.jpg', 1191),
+	(3667, 'products/20231218/Indomie_Jumbo.jpeg', 1192),
+	(3668, 'products/20231218/Festive_bread.jpg', 1193),
+	(3669, 'products/20231218/Sossi.jpeg', 1194),
+	(3670, 'products/20231218/Toilet_Paper.jpeg', 1195),
+	(3671, 'products/20231218/other_Y5bpPtW.png', 1146),
+	(3672, 'products/20231218/Royco.jpeg', 1196),
+	(3673, 'products/20231218/Royco_2.jpeg', 1196),
+	(3674, 'products/20231218/Nuvita_Biscuits_trAjuZf.jpg', 1197),
+	(3675, 'products/20231218/Nuvita_Biscuits_RaGVnkP.jpg', 1197),
+	(3676, 'products/20231218/water_geJ5H7w.jpeg', 1157),
+	(3677, 'products/20231218/Mosquito_Coil.jpeg', 1198),
+	(3678, 'products/20231218/other_f1J1XHD.png', 1199),
+	(3679, 'products/20231218/msafi_bar_soap_RSHrsbX.jpg', 1152),
+	(3680, 'products/20231218/Msafi_Powder_urCm9BT.jpeg', 1152),
+	(3681, 'products/20231218/toothbrush.jpg', 1200),
+	(3682, 'products/20231218/Manji_Ginger_Biscuits.jpg', 1201),
+	(3683, 'products/20231218/Nuvita_Biscuits_aAfAbWH.jpg', 1201),
+	(3684, 'products/20231218/Weetabix_Single.jpeg', 1202),
+	(3685, 'products/20231218/msafi_bar_soap_SqQ2xvN.jpg', 1152),
+	(3686, 'products/20231218/Msafi_Powder_s6W8zAR.jpeg', 1152),
+	(3687, 'products/20231218/other_9NbbPk6.png', 1176),
+	(3688, 'products/20231218/Sunlight_Powder_VmDGCdl.jpeg', 1203),
+	(3689, 'products/20231218/Baking_Powder_FhfgJzD.jpg', 1203),
+	(3690, 'products/20231218/kinangop_milk_UqOY67h.jpeg', 1174),
+	(3691, 'products/20231218/Sumoja_Milking.jpeg', 1204),
+	(3692, 'products/20231218/Sukuma_Wiki.jpeg', 1204),
+	(3693, 'products/20231218/Eno.jpeg', 1205),
+	(3694, 'products/20231218/Menthol_King.jpeg', 1206),
+	(3695, 'products/20231218/Family_packet.jpeg', 1207),
+	(3696, 'products/20231218/Family_packet_eoYGG1z.jpeg', 1208),
+	(3697, 'products/20231218/Nescafe.jpeg', 1209),
+	(3698, 'products/20231218/other_zDkK9Jw.png', 1146),
+	(3699, 'products/20231218/Bic_Razor.jpeg', 1210),
+	(3700, 'products/20231218/Kensalt_Salt.jpeg', 1211),
+	(3701, 'products/20231218/Kensalt_Salt_PrAHb9A.jpeg', 1211),
+	(3702, 'products/20231218/Cigarettes.jpeg', 1212),
+	(3703, 'products/20231218/Colgate_1_QA9psAR.jpg', 1212),
+	(3704, 'products/20231218/Twiga_Exercise.jpeg', 1213),
+	(3705, 'products/20231218/Twiga_Exercise_P06cC1x.jpeg', 1213),
+	(3706, 'products/20231218/Nuvita_Biscuits_BUw9NUH.jpg', 1214),
+	(3707, 'products/20231218/Manji_Ginger_Biscuits_SsKnqu9.jpg', 1214),
+	(3708, 'products/20231218/other_bSielwx.png', 1215),
+	(3709, 'products/20231218/water_nDJIGe7.jpeg', 1157),
+	(3710, 'products/20231218/other_5JUILZo.png', 1146),
+	(3711, 'products/20231218/Softcare_Diaper_VevW8uD.jpg', 1216),
+	(3712, 'products/20231218/Softcare_4wyOe22.jpg', 1216),
+	(3713, 'products/20231218/Msafi_Powder_vltlrRu.jpeg', 1142),
+	(3714, 'products/20231218/Baking_Powder_DktwiLv.jpg', 1142),
+	(3715, 'products/20231218/sawa_bath_soap.jpg', 1217),
+	(3716, 'products/20231218/Safari_tea.jpg', 1217),
+	(3717, 'products/20231218/sawa_bath_soap_tVmVorJ.jpg', 1217),
+	(3718, 'products/20231218/Safari_tea_Qr15Sgo.jpg', 1217),
+	(3719, 'products/20231218/Softcare_Diaper_pgnMS2N.jpg', 1216),
+	(3720, 'products/20231218/Softcare_JOlcSjv.jpg', 1216),
+	(3721, 'products/20231218/Softcare_Diaper_vEAsdk3.jpg', 1216),
+	(3722, 'products/20231218/Softcare_HecXyw2.jpg', 1216),
+	(3723, 'products/20231218/Quencher_Pineapple_BV3gGey.jpeg', 1150),
+	(3724, 'products/20231218/Quencher_wg9Xi2Q.jpeg', 1150),
+	(3725, 'products/20231218/Manji_Ginger_Biscuits_RbrC7oj.jpg', 1218),
+	(3726, 'products/20231218/Nuvita_Biscuits_7aUkEVh.jpg', 1218),
+	(3727, 'products/20231218/eggs.jpg', 1219),
+	(3728, 'products/20231218/broilers_VjC0R27.jpeg', 1135),
+	(3729, 'products/20231218/Glucose_Excel.jpeg', 1220),
+	(3730, 'products/20231218/Glucose_Excel_BNIiqtU.jpeg', 1220),
+	(3731, 'products/20231218/KDF.jpeg', 1221),
+	(3732, 'products/20231218/Cigarettes_7NqTbTO.jpeg', 1212),
+	(3733, 'products/20231218/Colgate_1_J7baHBO.jpg', 1212),
+	(3734, 'products/20231218/Cigarettes_idFkB8A.jpeg', 1212),
+	(3735, 'products/20231218/Colgate_1_0r2y3ec.jpg', 1212),
+	(3736, 'products/20231218/Sunlight_Powder_miTpy0J.jpeg', 1222),
+	(3737, 'products/20231218/Sunlight_Powder_NXy5l8Q.jpeg', 1222),
+	(3738, 'products/20231218/Panado_Extra.jpeg', 1223),
+	(3739, 'products/20231218/Panadol.jpeg', 1223),
+	(3740, 'products/20231218/Tuliza.jpeg', 1224),
+	(3741, 'products/20231218/Sukuma_Wiki_2RHFGix.jpeg', 1225),
+	(3742, 'products/20231218/Sumoja_Milking_CNzmZoN.jpeg', 1225),
+	(3743, 'products/20231218/Spinach.jpeg', 1226),
+	(3744, 'products/20231218/other_Hc0VMY9.png', 1146),
+	(3745, 'products/20231218/Cocoa_Raha.jpeg', 1227),
+	(3746, 'products/20231218/sweets.jpg', 1228),
+	(3747, 'products/20231218/sweets_koo.jpg', 1228),
+	(3748, 'products/20231218/Ketepa_tea_gnk2QFk.jpg', 1189),
+	(3749, 'products/20231218/Nescafe_Aybk72E.jpeg', 1209),
+	(3750, 'products/20231218/Bites_2.jpg', 1229),
+	(3751, 'products/20231218/Bites_1_HD8y3vo.jpg', 1229),
+	(3752, 'products/20231218/Drinking_Chocolate_2.jpeg', 1230),
+	(3753, 'products/20231218/Drinking_Chocolate.jpeg', 1230),
+	(3754, 'products/20231218/Ringoz.jpeg', 1231),
+	(3755, 'products/20231218/Omo_8Kod72W.jpeg', 1136),
+	(3756, 'products/20231218/ariel.jpg', 1232),
+	(3757, 'products/20231218/Arimis_McLuMRU.jpeg', 1232),
+	(3758, 'products/20231218/ariel_4PwEB2x.jpg', 1232),
+	(3759, 'products/20231218/Arimis_bonDris.jpeg', 1232),
+	(3760, 'products/20231218/ariel_bhYAjn1.jpg', 1232),
+	(3761, 'products/20231218/Arimis_aBQpuow.jpeg', 1232),
+	(3762, 'products/20231218/Cigarettes_VKsUsvR.jpeg', 1212),
+	(3763, 'products/20231218/Colgate_1_wyU6mfq.jpg', 1212),
+	(3764, 'products/20231218/Cigarettes_wJHqsYa.jpeg', 1212),
+	(3765, 'products/20231218/Colgate_1_HflNCtk.jpg', 1212),
+	(3766, 'products/20231218/Candles_Sumo.jpeg', 1233),
+	(3767, 'products/20231218/Ariel_Powder.jpeg', 1234),
+	(3768, 'products/20231218/Baking_Powder_2_8M96XtS.jpg', 1234),
+	(3769, 'products/20231218/Tropical_Heat.jpeg', 1235),
+	(3770, 'products/20231218/Gilda_Conc.jpeg', 1236),
+	(3771, 'products/20231218/tomato_paste.jpg', 1236),
+	(3772, 'products/20231218/Safari_tea_Kebge0u.jpg', 1237),
+	(3773, 'products/20231218/Steelwool.jpeg', 1238),
+	(3774, 'products/20231218/Dormans.jpeg', 1239),
+	(3775, 'products/20231218/Hedex.jpeg', 1240),
+	(3776, 'products/20231218/Maramoja.jpeg', 1241),
+	(3777, 'products/20231218/Panadol_HyyVqX4.jpeg', 1242),
+	(3778, 'products/20231218/Panado_Extra_dg2RZyo.jpeg', 1242),
+	(3779, 'products/20231218/Ketepa_tea_sn1HDde.jpg', 1189),
+	(3780, 'products/20231218/Big_Daddy.jpeg', 1243),
+	(3781, 'products/20231218/Big_Daddy_1.jpeg', 1243),
+	(3782, 'products/20231218/Lollypop_Big..jpeg', 1244),
+	(3783, 'products/20231218/Fresh_pk.jpg', 1245),
+	(3784, 'products/20231218/Fresh_Milk.jpg', 1245),
+	(3785, 'products/20231218/Fresh_pk_6XItqXi.jpg', 1245),
+	(3786, 'products/20231218/Fresh_Milk_6FkSnSh.jpg', 1245),
+	(3787, 'products/20231218/Fresh_pk_rPvWa6K.jpg', 1245),
+	(3788, 'products/20231218/Fresh_Milk_8wvJRhY.jpg', 1245),
+	(3789, 'products/20231218/Fresh_pk_bHMr6Qz.jpg', 1245),
+	(3790, 'products/20231218/Fresh_Milk_xsoNFrF.jpg', 1245),
+	(3791, 'products/20231218/PK_Chewing.jpeg', 1246),
+	(3792, 'products/20231218/Drinking_Chocolate_2_peMBV8I.jpeg', 1230),
+	(3793, 'products/20231218/Drinking_Chocolate_gvfuqtQ.jpeg', 1230),
+	(3794, 'products/20231218/Manji_Ginger_Biscuits_gTvwL9u.jpg', 1247),
+	(3795, 'products/20231218/Nuvita_Biscuits_JbjH1Mu.jpg', 1248),
+	(3796, 'products/20231218/Nuvita_Biscuits_46y49je.jpg', 1249),
+	(3797, 'products/20231218/Matchbox.jpeg', 1250),
+	(3798, 'products/20231218/Royco_TiqNAtF.jpeg', 1196),
+	(3799, 'products/20231218/Royco_2_syQF4jg.jpeg', 1196),
+	(3800, 'products/20231218/Royco_cEZzN9l.jpeg', 1196),
+	(3801, 'products/20231218/Royco_2_EadYxe1.jpeg', 1196),
+	(3802, 'products/20231218/Tropical_Heat_BQHSd9K.jpeg', 1251),
+	(3803, 'products/20231218/Toilet_Paper_pjy6UEJ.jpeg', 1251),
+	(3804, 'products/20231218/Tropical_Heat_RIPY0Hh.jpeg', 1251),
+	(3805, 'products/20231218/Toilet_Paper_kAm9uRC.jpeg', 1251),
+	(3806, 'products/20231218/Tropical_Sweets.jpeg', 1252),
+	(3807, 'products/20231218/Tropical_Heat_dcUn7Pa.jpeg', 1252),
+	(3808, 'products/20231218/Tropical_Sweets_AY03b4x.jpeg', 1253),
+	(3809, 'products/20231218/Koo_Kenya.jpeg', 1254),
+	(3810, 'products/20231218/cowboy_cocking_fat.jpeg', 1255),
+	(3811, 'products/20231218/kimbo_cooking_fat_yT3HVlt.jpeg', 1255),
+	(3812, 'products/20231218/kimbo_cooking_fat_ZOEuakN.jpeg', 1139),
+	(3813, 'products/20231218/kimbo_coocking_fat_vHKc7Zq.jpg', 1139),
+	(3814, 'products/20231218/cowboy_cocking_fat_YAwvaQH.jpeg', 1255),
+	(3815, 'products/20231218/kimbo_cooking_fat_vCKtehI.jpeg', 1255),
+	(3816, 'products/20231218/cowboy_cocking_fat_9PizzoD.jpeg', 1255),
+	(3817, 'products/20231218/kimbo_cooking_fat_IyzJqIN.jpeg', 1255),
+	(3818, 'products/20231218/other_eSNKi7G.png', 1146),
+	(3819, 'products/20231218/Omena.jpg', 1256),
+	(3820, 'products/20231218/Omena_2.jpg', 1256),
+	(3821, 'products/20231218/other_VdVc3vz.png', 1146),
+	(3822, 'products/20231218/other_O8Vo5QR.png', 1146),
+	(3823, 'products/20231218/Sweet_Potatoes.jpg', 1257),
+	(3824, 'products/20231218/Irish_Potatoes.jpg', 1257),
+	(3825, 'products/20231218/other_Ox3cwbX.png', 1146),
+	(3826, 'products/20231218/other_cNpgQSl.png', 1258),
+	(3827, 'products/20231218/other_Q17MCr2.png', 1259),
+	(3828, 'products/20231218/other_1kfogKI.png', 1260),
+	(3829, 'products/20231218/Cocoa_Raha_7HGd3Lf.jpeg', 1227),
+	(3830, 'products/20231218/sugar_YBw7nnt.jpeg', 1143),
+	(3831, 'products/20231218/sugar_xmAwBLg.jpeg', 1143),
+	(3832, 'products/20231218/other_Z3v88gB.png', 1146),
+	(3833, 'products/20231218/Sossi_4tpecbD.jpeg', 1194),
+	(3834, 'products/20231218/sugar_ebcVa9G.jpeg', 1143),
+	(3835, 'products/20231218/sugar_4sn07e1.jpeg', 1143),
+	(3836, 'products/20231218/other_5tBwPVX.png', 1146),
+	(3837, 'products/20231218/other_RaaQYGf.png', 1146),
+	(3838, 'products/20231218/other_GEtTxV4.png', 1146);
 
 -- Dumping structure for table bengomall.products
 CREATE TABLE IF NOT EXISTS `products` (
@@ -7295,6 +8236,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `model` varchar(255) DEFAULT NULL,
   `title` longtext NOT NULL,
   `description` longtext NOT NULL,
+  `unit_price` double NOT NULL,
   `retail_price` double NOT NULL,
   `discount_price` double DEFAULT NULL,
   `status` int NOT NULL,
@@ -7304,7 +8246,6 @@ CREATE TABLE IF NOT EXISTS `products` (
   `dimentions` varchar(50) DEFAULT NULL,
   `maincategory_id` bigint DEFAULT NULL,
   `vendor_id` bigint DEFAULT NULL,
-  `unit_price` double NOT NULL,
   PRIMARY KEY (`id`),
   KEY `products_maincategory_id_b9e68b6b_fk_main_categories_id` (`maincategory_id`),
   KEY `products_vendor_id_7527517c_fk_vendors_id` (`vendor_id`),
@@ -7312,137 +8253,137 @@ CREATE TABLE IF NOT EXISTS `products` (
   CONSTRAINT `products_vendor_id_7527517c_fk_vendors_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1262 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.products: ~128 rows (approximately)
-INSERT IGNORE INTO `products` (`id`, `model`, `title`, `description`, `retail_price`, `discount_price`, `status`, `date_added`, `date_updated`, `weight`, `dimentions`, `maincategory_id`, `vendor_id`, `unit_price`) VALUES
-	(1133, '', 'Honey', 'Honey 1kg', 0, NULL, 1, '2023-11-20 20:17:39.828573', '2023-11-20 20:17:39.829832', '', '', 163, 1, 0),
-	(1134, '', 'Blue band', 'Blue band 1kg', 0, NULL, 1, '2023-11-20 20:17:39.878121', '2023-11-20 20:17:39.878121', '', '', 164, 1, 0),
-	(1135, '', 'Broilers', 'Broilers 1.2kg', 0, NULL, 1, '2023-11-20 20:17:39.911992', '2023-11-20 20:17:39.925540', '', '', 165, 1, 0),
-	(1136, '', 'Omo', 'Omo 40g', 0, NULL, 1, '2023-11-20 20:17:40.027736', '2023-11-20 20:17:40.027736', '', '', 166, 1, 0),
-	(1137, '', 'Sausages', 'Sausages 500g', 0, NULL, 1, '2023-11-20 20:17:40.141110', '2023-11-20 20:17:40.143109', '', '', 167, 1, 0),
-	(1138, '', 'Fresh Fri Cooking Oil', 'Fresh Fri Cooking Oil 1 Liter', 0, NULL, 1, '2023-11-20 20:17:40.174483', '2023-11-20 20:17:40.177487', '', '', 168, 1, 0),
-	(1139, '', 'Kimbo Cooking Fat', 'Kimbo Cooking Fat 1kg', 0, NULL, 1, '2023-11-20 20:17:40.216801', '2023-11-20 20:17:40.217801', '', '', 168, 1, 0),
-	(1140, '', 'Arimis', 'Arimis 50g', 0, NULL, 1, '2023-11-20 20:17:40.329133', '2023-11-20 20:17:40.329133', '', '', 169, 1, 0),
-	(1141, '', 'Kamande', 'Kamande piece(s)', 0, NULL, 1, '2023-11-20 20:17:40.381098', '2023-11-20 20:17:40.381098', '', '', 170, 1, 0),
-	(1142, '', 'Msafi Powder', 'Msafi Powder 1kg White', 0, NULL, 1, '2023-11-20 20:17:40.444355', '2023-11-20 20:17:40.444355', '', '', 166, 1, 0),
-	(1143, '', 'Sugar', 'Sugar 1kg', 0, NULL, 1, '2023-11-20 20:17:40.549458', '2023-11-20 20:17:40.550456', '', '', 171, 1, 0),
-	(1144, '', 'Unga Chapati - Ajab', 'Unga Chapati - Ajab 2kg', 0, NULL, 1, '2023-11-20 20:17:40.596177', '2023-11-20 20:17:40.598178', '', '', 172, 1, 0),
-	(1145, '', 'Premium Pishori Rice', 'Premium Pishori Rice 1kg', 0, NULL, 1, '2023-11-20 20:17:40.647532', '2023-11-20 20:17:40.647532', '', '', 173, 1, 0),
-	(1146, '', 'Soda', 'Soda 2 Liters', 0, NULL, 1, '2023-11-20 20:17:40.762741', '2023-11-20 20:17:40.762741', '', '', 174, 1, 0),
-	(1147, '', 'Savannah Cocopine Juice', 'Savannah Cocopine Juice 1 Liter', 0, NULL, 1, '2023-11-20 20:17:40.807501', '2023-11-20 20:17:40.810501', '', '', 174, 1, 0),
-	(1148, '', 'Yellow Beans', 'Yellow Beans piece(s)', 0, NULL, 1, '2023-11-20 20:17:40.848556', '2023-11-20 20:17:40.848556', '', '', 170, 1, 0),
-	(1149, '', 'Unga Ugali - Pembe', 'Unga Ugali - Pembe 1kg', 0, NULL, 1, '2023-11-20 20:17:40.896240', '2023-11-20 20:17:40.898615', '', '', 172, 1, 0),
-	(1150, '', 'Quencher Pineapple Juice', 'Quencher Pineapple Juice 1 Liter', 0, NULL, 1, '2023-11-20 20:17:40.947395', '2023-11-20 20:17:40.949394', '', '', 174, 1, 0),
-	(1151, '', 'Yoghurt', 'Yoghurt piece(s)', 0, NULL, 1, '2023-11-20 20:17:41.070835', '2023-11-20 20:17:41.072835', '', '', 175, 1, 0),
-	(1152, '', 'Msafi Bar Soap', 'Msafi Bar Soap 1kg', 0, NULL, 1, '2023-11-20 20:17:41.096288', '2023-11-20 20:17:41.096288', '', '', 166, 1, 0),
-	(1153, '', 'Premium Imported Rice', 'Premium Imported Rice 1kg', 0, NULL, 1, '2023-11-20 20:17:41.157812', '2023-11-20 20:17:41.159820', '', '', 173, 1, 0),
-	(1154, '', 'Sunlight Powder Yellow', 'Sunlight Powder Yellow 400g', 0, NULL, 1, '2023-11-20 20:17:41.243052', '2023-11-20 20:17:41.247216', '', '', 166, 1, 0),
-	(1155, '', 'Ndengu', 'Ndengu Makueni', 0, NULL, 1, '2023-11-20 20:17:41.421878', '2023-11-20 20:17:41.422879', '', '', 170, 1, 0),
-	(1156, '', 'Mala', 'Mala 1', 0, NULL, 1, '2023-11-20 20:17:41.447541', '2023-11-20 20:17:41.463769', '', '', 175, 1, 0),
-	(1157, '', 'Water', 'Water 5 Liters', 0, NULL, 1, '2023-11-20 20:17:41.498056', '2023-11-20 20:17:41.498056', '', '', 174, 1, 0),
-	(1158, '', 'Bread', 'Bread piece(s)', 0, NULL, 1, '2023-11-20 20:17:41.582442', '2023-11-20 20:17:41.582442', '', '', 176, 1, 0),
-	(1159, '', 'Mandazi', 'Mandazi piece(s)', 0, NULL, 1, '2023-11-20 20:17:41.623060', '2023-11-20 20:17:41.626487', '', '', 177, 1, 0),
-	(1160, '', 'Ngumu', 'Ngumu piece(s)', 0, NULL, 1, '2023-11-20 20:17:41.668705', '2023-11-20 20:17:41.669704', '', '', 178, 1, 0),
-	(1161, '', 'Always', 'Always Pink', 0, NULL, 1, '2023-11-20 20:17:41.697549', '2023-11-20 20:17:41.697549', '', '', 179, 1, 0),
-	(1162, '', 'Biryani Rice', 'Biryani Rice 1kg', 0, NULL, 1, '2023-11-20 20:17:41.802025', '2023-11-20 20:17:41.804025', '', '', 173, 1, 0),
-	(1163, '', 'Bella Baby Wipes', 'Bella Baby Wipes 80 wipes', 0, NULL, 1, '2023-11-20 20:17:41.931730', '2023-11-20 20:17:41.932732', '', '', 180, 1, 0),
-	(1164, '', 'Afia Juice Mixed Fruit', 'Afia Juice Mixed Fruit 500ml', 0, NULL, 1, '2023-11-20 20:17:42.096557', '2023-11-20 20:17:42.096557', '', '', 174, 1, 0),
-	(1165, '', 'Fresh Milk - Njugunas', 'Fresh Milk - Njugunas piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.151259', '2023-11-20 20:17:42.153258', '', '', 175, 1, 0),
-	(1166, '', 'Softcare Pads', 'Softcare Pads piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.202527', '2023-11-20 20:17:42.203530', '', '', 179, 1, 0),
-	(1167, '', 'Colgate', 'Colgate 15g', 0, NULL, 1, '2023-11-20 20:17:42.253809', '2023-11-20 20:17:42.255808', '', '', 181, 1, 0),
-	(1168, '', 'Spaghetti Daawat Green', 'Spaghetti Daawat Green 400g', 0, NULL, 1, '2023-11-20 20:17:42.339314', '2023-11-20 20:17:42.342320', '', '', 167, 1, 0),
-	(1169, '', 'Jam ', 'Jam  100g', 0, NULL, 1, '2023-11-20 20:17:42.428607', '2023-11-20 20:17:42.428607', '', '', 164, 1, 0),
-	(1170, '', 'Fresh Milk - Kabete Dairies', 'Fresh Milk - Kabete Dairies piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.496557', '2023-11-20 20:17:42.496557', '', '', 175, 1, 0),
-	(1171, '', 'Predator', 'Predator piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.550959', '2023-11-20 20:17:42.551961', '', '', 174, 1, 0),
-	(1172, '', 'Nuvita Break Time Biscuits', 'Nuvita Break Time Biscuits piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.647157', '2023-11-20 20:17:42.647157', '', '', 182, 1, 0),
-	(1173, '', 'Champ Mango Colada', 'Champ Mango Colada 300ml', 0, NULL, 1, '2023-11-20 20:17:42.712913', '2023-11-20 20:17:42.712913', '', '', 174, 1, 0),
-	(1174, '', 'Kinangop Milk', 'Kinangop Milk 500ml', 0, NULL, 1, '2023-11-20 20:17:42.762397', '2023-11-20 20:17:42.762397', '', '', 175, 1, 0),
-	(1175, '', 'Baking Powder', 'Baking Powder piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.801993', '2023-11-20 20:17:42.803994', '', '', 183, 1, 0),
-	(1176, '', 'Ketepa Tangawizi Tea Leaves', 'Ketepa Tangawizi Tea Leaves 100g', 0, NULL, 1, '2023-11-20 20:17:42.847158', '2023-11-20 20:17:42.847158', '', '', 184, 1, 0),
-	(1177, '', 'Crisps Assorted', 'Crisps Assorted 50g', 0, NULL, 1, '2023-11-20 20:17:42.912384', '2023-11-20 20:17:42.912384', '', '', 185, 1, 0),
-	(1178, '', 'Cheese & Onion', 'Cheese & Onion piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.949279', '2023-11-20 20:17:42.951279', '', '', 186, 1, 0),
-	(1179, '', 'Chilli Lemon', 'Chilli Lemon piece(s)', 0, NULL, 1, '2023-11-20 20:17:42.995756', '2023-11-20 20:17:42.998751', '', '', 186, 1, 0),
-	(1180, '', 'Salt & Vinegar', 'Salt & Vinegar piece(s)', 0, NULL, 1, '2023-11-20 20:17:43.029950', '2023-11-20 20:17:43.029950', '', '', 186, 1, 0),
-	(1181, '', 'Tomato', 'Tomato piece(s)', 0, NULL, 1, '2023-11-20 20:17:43.075204', '2023-11-20 20:17:43.078213', '', '', 186, 1, 0),
-	(1182, '', 'Afia Juice Mango', 'Afia Juice Mango 200ml', 0, NULL, 1, '2023-11-20 20:17:43.112018', '2023-11-20 20:17:43.112018', '', '', 174, 1, 0),
-	(1183, '', 'Minute Maid Mango', 'Minute Maid Mango 280ml', 0, NULL, 1, '2023-11-20 20:17:43.157623', '2023-11-20 20:17:43.160629', '', '', 174, 1, 0),
-	(1184, '', 'Jooz Orange Juice', 'Jooz Orange Juice 300ml', 0, NULL, 1, '2023-11-20 20:17:43.229240', '2023-11-20 20:17:43.229240', '', '', 174, 1, 0),
-	(1185, '', 'Juo Orange Juice', 'Juo Orange Juice 300ml', 0, NULL, 1, '2023-11-20 20:17:43.266660', '2023-11-20 20:17:43.267661', '', '', 174, 1, 0),
-	(1186, '', 'Juo Ukwaju Juice', 'Juo Ukwaju Juice 300ml', 0, NULL, 1, '2023-11-20 20:17:43.296168', '2023-11-20 20:17:43.307594', '', '', 174, 1, 0),
-	(1187, '', 'Afia Mixed Fruit Juice', 'Afia Mixed Fruit Juice 200ml', 0, NULL, 1, '2023-11-20 20:17:43.341243', '2023-11-20 20:17:43.345244', '', '', 174, 1, 0),
-	(1188, '', 'Novida', 'Novida 350ml', 0, NULL, 1, '2023-11-20 20:17:43.429900', '2023-11-20 20:17:43.429900', '', '', 174, 1, 0),
-	(1189, '', 'Ketepa Tea Leaves', 'Ketepa Tea Leaves 100g', 0, NULL, 1, '2023-11-20 20:17:43.578980', '2023-11-20 20:17:43.578980', '', '', 184, 1, 0),
-	(1190, '', 'Eden Tea', 'Eden Tea 15g', 0, NULL, 1, '2023-11-20 20:17:43.617951', '2023-11-20 20:17:43.619950', '', '', 184, 1, 0),
-	(1191, '', 'White Wash 175g', 'White Wash 175g Soaps', 0, NULL, 1, '2023-11-20 20:17:43.690945', '2023-11-20 20:17:43.694945', '', '', 166, 1, 0),
-	(1192, '', 'Indomie Jumbo Chicken', 'Indomie Jumbo Chicken 120g', 0, NULL, 1, '2023-11-20 20:17:43.735221', '2023-11-20 20:17:43.736220', '', '', 167, 1, 0),
-	(1193, '', 'Festive Classic Bread', 'Festive Classic Bread piece(s)', 0, NULL, 1, '2023-11-20 20:17:43.777688', '2023-11-20 20:17:43.777688', '', '', 176, 1, 0),
-	(1194, '', 'Sossi', 'Sossi 80g', 0, NULL, 1, '2023-11-20 20:17:43.829109', '2023-11-20 20:17:43.829109', '', '', 167, 1, 0),
-	(1195, '', 'Toilet Paper  ', 'Toilet Paper   Bella', 0, NULL, 1, '2023-11-20 20:17:43.866579', '2023-11-20 20:17:43.868578', '', '', 180, 1, 0),
-	(1196, '', 'Royco', 'Royco Satchet 8g', 0, NULL, 1, '2023-11-20 20:17:43.948913', '2023-11-20 20:17:43.949913', '', '', 187, 1, 0),
-	(1197, '', 'Biscuits', 'Biscuits 1', 0, NULL, 1, '2023-11-20 20:17:43.998439', '2023-11-20 20:17:43.999437', '', '', 182, 1, 0),
-	(1198, '', 'Mosquito Coil', 'Mosquito Coil Red', 0, NULL, 1, '2023-11-20 20:17:44.096896', '2023-11-20 20:17:44.096896', '', '', 188, 1, 0),
-	(1199, '', 'Cabbage', 'Cabbage piece(s)', 0, NULL, 1, '2023-11-20 20:17:44.146455', '2023-11-20 20:17:44.148455', '', '', 189, 1, 0),
-	(1200, '', 'Toothbrush', 'Toothbrush piece(s)', 0, NULL, 1, '2023-11-20 20:17:44.222886', '2023-11-20 20:17:44.226196', '', '', 190, 1, 0),
-	(1201, '', 'Golden Marie Biscuits', 'Golden Marie Biscuits 85g', 0, NULL, 1, '2023-11-20 20:17:44.265540', '2023-11-20 20:17:44.267541', '', '', 182, 1, 0),
-	(1202, '', 'Weetabix Single Serve', 'Weetabix Single Serve 37g', 0, NULL, 1, '2023-11-20 20:17:44.311638', '2023-11-20 20:17:44.311638', '', '', 191, 1, 0),
-	(1203, '', 'Sunlight Powder', 'Sunlight Powder 80g', 0, NULL, 1, '2023-11-20 20:17:44.451169', '2023-11-20 20:17:44.451169', '', '', 166, 1, 0),
-	(1204, '', 'Sumoja Milking Jelly', 'Sumoja Milking Jelly 50g', 0, NULL, 1, '2023-11-20 20:17:44.533513', '2023-11-20 20:17:44.534513', '', '', 169, 1, 0),
-	(1205, '', 'Eno', 'Eno 350ml ', 0, NULL, 1, '2023-11-20 20:17:44.562256', '2023-11-20 20:17:44.579784', '', '', 164, 1, 0),
-	(1206, '', 'Menthol King', 'Menthol King 350ml ', 0, NULL, 1, '2023-11-20 20:17:44.613167', '2023-11-20 20:17:44.613167', '', '', 192, 1, 0),
-	(1207, '', 'Family (packet) Nuvita Orange', 'Family (packet) Nuvita Orange 75g', 0, NULL, 1, '2023-11-20 20:17:44.650506', '2023-11-20 20:17:44.652507', '', '', 193, 1, 0),
-	(1208, '', 'Family (packet) Nuvita Green', 'Family (packet) Nuvita Green 75g', 0, NULL, 1, '2023-11-20 20:17:44.678692', '2023-11-20 20:17:44.678692', '', '', 194, 1, 0),
-	(1209, '', 'Nescafe', 'Nescafe Satchet', 0, NULL, 1, '2023-11-20 20:17:44.724501', '2023-11-20 20:17:44.727504', '', '', 195, 1, 0),
-	(1210, '', 'Bic Razor', 'Bic Razor piece(s)', 0, NULL, 1, '2023-11-20 20:17:44.799647', '2023-11-20 20:17:44.800649', '', '', 196, 1, 0),
-	(1211, '', 'Kensalt Salt', 'Kensalt Salt 200g', 0, NULL, 1, '2023-11-20 20:17:44.830703', '2023-11-20 20:17:44.830703', '', '', 186, 1, 0),
-	(1212, '', 'Cigarettes ', 'Cigarettes  Switch', 0, NULL, 1, '2023-11-20 20:17:44.917757', '2023-11-20 20:17:44.918745', '', '', 197, 1, 0),
-	(1213, '', 'Twiga Exercise Book', 'Twiga Exercise Book 48 pages Ruled', 0, NULL, 1, '2023-11-20 20:17:44.966745', '2023-11-20 20:17:44.967746', '', '', 196, 1, 0),
-	(1214, '', 'Oreo Biscuits', 'Oreo Biscuits 27.6g', 0, NULL, 1, '2023-11-20 20:17:45.051012', '2023-11-20 20:17:45.053011', '', '', 182, 1, 0),
-	(1215, '', 'Kahawa No. 1', 'Kahawa No. 1 34g', 0, NULL, 1, '2023-11-20 20:17:45.095523', '2023-11-20 20:17:45.095523', '', '', 195, 1, 0),
-	(1216, '', 'Softcare Diaper Gold', 'Softcare Diaper Gold Large', 0, NULL, 1, '2023-11-20 20:17:45.213183', '2023-11-20 20:17:45.213183', '', '', 180, 1, 0),
-	(1217, '', 'Sawa Bath Soap', 'Sawa Bath Soap Original', 0, NULL, 1, '2023-11-20 20:17:45.294365', '2023-11-20 20:17:45.294365', '', '', 166, 1, 0),
-	(1218, '', 'Yego Marie Biscuits', 'Yego Marie Biscuits 60g', 0, NULL, 1, '2023-11-20 20:17:45.629955', '2023-11-20 20:17:45.629955', '', '', 198, 1, 0),
-	(1219, '', 'Eggs', 'Eggs 1', 0, NULL, 1, '2023-11-20 20:17:45.678945', '2023-11-20 20:17:45.678945', '', '', 165, 1, 0),
-	(1220, '', 'Glucose Excel', 'Glucose Excel 15g', 0, NULL, 1, '2023-11-20 20:17:45.760696', '2023-11-20 20:17:45.763616', '', '', 199, 1, 0),
-	(1221, '', 'KDF', 'KDF piece(s)', 0, NULL, 1, '2023-11-20 20:17:45.827921', '2023-11-20 20:17:45.827921', '', '', 200, 1, 0),
-	(1222, '', 'Sunlight Bar Soap', 'Sunlight Bar Soap 175g', 0, NULL, 1, '2023-11-20 20:17:45.964841', '2023-11-20 20:17:45.966842', '', '', 166, 1, 0),
-	(1223, '', 'Panado Extra', 'Panado Extra Pair', 0, NULL, 1, '2023-11-20 20:17:46.045737', '2023-11-20 20:17:46.047736', '', '', 192, 1, 0),
-	(1224, '', 'Tuliza', 'Tuliza Pair', 0, NULL, 1, '2023-11-20 20:17:46.079672', '2023-11-20 20:17:46.096721', '', '', 192, 1, 0),
-	(1225, '', 'Sukuma Wiki', 'Sukuma Wiki piece(s)', 0, NULL, 1, '2023-11-20 20:17:46.134404', '2023-11-20 20:17:46.135405', '', '', 189, 1, 0),
-	(1226, '', 'Spinach', 'Spinach piece(s)', 0, NULL, 1, '2023-11-20 20:17:46.180840', '2023-11-20 20:17:46.182840', '', '', 189, 1, 0),
-	(1227, '', 'Cocoa Raha', 'Cocoa Raha 10g', 0, NULL, 1, '2023-11-20 20:17:46.255137', '2023-11-20 20:17:46.257136', '', '', 184, 1, 0),
-	(1228, '', 'Sweets', 'Sweets Lollypop Small', 0, NULL, 1, '2023-11-20 20:17:46.295001', '2023-11-20 20:17:46.295001', '', '', 201, 1, 0),
-	(1229, '', 'Bites', 'Bites piece(s)', 0, NULL, 1, '2023-11-20 20:17:46.413489', '2023-11-20 20:17:46.413489', '', '', 202, 1, 0),
-	(1230, '', 'Drinking Chocolate Raha', 'Drinking Chocolate Raha 20g', 0, NULL, 1, '2023-11-20 20:17:46.465939', '2023-11-20 20:17:46.466942', '', '', 195, 1, 0),
-	(1231, '', 'Ringoz', 'Ringoz piece(s)', 0, NULL, 1, '2023-11-20 20:17:46.513374', '2023-11-20 20:17:46.515368', '', '', 203, 1, 0),
-	(1232, '', 'Ariel', 'Ariel 20g', 0, NULL, 1, '2023-11-20 20:17:46.577499', '2023-11-20 20:17:46.580497', '', '', 166, 1, 0),
-	(1233, '', 'Candles Sumo', 'Candles Sumo 96 pieces', 0, NULL, 1, '2023-11-20 20:17:46.825352', '2023-11-20 20:17:46.840691', '', '', 204, 1, 0),
-	(1234, '', 'Ariel Powder Soap', 'Ariel Powder Soap 20g', 0, NULL, 1, '2023-11-20 20:17:46.882888', '2023-11-20 20:17:46.882888', '', '', 166, 1, 0),
-	(1235, '', 'Tropical Heat Curry Powder', 'Tropical Heat Curry Powder 10g', 0, NULL, 1, '2023-11-20 20:17:46.944532', '2023-11-20 20:17:46.944532', '', '', 186, 1, 0),
-	(1236, '', 'Gilda Conc Tomato Paste', 'Gilda Conc Tomato Paste piece(s)', 0, NULL, 1, '2023-11-20 20:17:46.996827', '2023-11-20 20:17:46.998825', '', '', 186, 1, 0),
-	(1237, '', 'Safari Puffs', 'Safari Puffs piece(s)', 0, NULL, 1, '2023-11-20 20:17:47.044828', '2023-11-20 20:17:47.047441', '', '', 205, 1, 0),
-	(1238, '', 'Steelwool', 'Steelwool 15g', 0, NULL, 1, '2023-11-20 20:17:47.080611', '2023-11-20 20:17:47.080611', '', '', 206, 1, 0),
-	(1239, '', 'Dormans', 'Dormans Satchet', 0, NULL, 1, '2023-11-20 20:17:47.120114', '2023-11-20 20:17:47.122115', '', '', 192, 1, 0),
-	(1240, '', 'Hedex', 'Hedex Pair', 0, NULL, 1, '2023-11-20 20:17:47.161693', '2023-11-20 20:17:47.161693', '', '', 192, 1, 0),
-	(1241, '', 'Maramoja', 'Maramoja Pair', 0, NULL, 1, '2023-11-20 20:17:47.200070', '2023-11-20 20:17:47.202069', '', '', 192, 1, 0),
-	(1242, '', 'Panadol', 'Panadol Pair', 0, NULL, 1, '2023-11-20 20:17:47.227865', '2023-11-20 20:17:47.227865', '', '', 192, 1, 0),
-	(1243, '', 'Big Daddy', 'Big Daddy packet', 0, NULL, 1, '2023-11-20 20:17:47.318390', '2023-11-20 20:17:47.319389', '', '', 201, 1, 0),
-	(1244, '', 'Lollypop Big Giant', 'Lollypop Big Giant packet', 0, NULL, 1, '2023-11-20 20:17:47.364561', '2023-11-20 20:17:47.364561', '', '', 201, 1, 0),
-	(1245, '', 'Fresh', 'Fresh Assorted', 0, NULL, 1, '2023-11-20 20:17:47.404909', '2023-11-20 20:17:47.405907', '', '', 207, 1, 0),
-	(1246, '', 'PK Chewing Gum', 'PK Chewing Gum piece(s)', 0, NULL, 1, '2023-11-20 20:17:47.591025', '2023-11-20 20:17:47.595023', '', '', 207, 1, 0),
-	(1247, '', 'Golden Ginger Nut', 'Golden Ginger Nut packet', 0, NULL, 1, '2023-11-20 20:17:47.672691', '2023-11-20 20:17:47.677091', '', '', 182, 1, 0),
-	(1248, '', 'Nuvita Ginger', 'Nuvita Ginger packet', 0, NULL, 1, '2023-11-20 20:17:47.715758', '2023-11-20 20:17:47.716757', '', '', 182, 1, 0),
-	(1249, '', 'Nuvita Milk', 'Nuvita Milk packet', 0, NULL, 1, '2023-11-20 20:17:47.745947', '2023-11-20 20:17:47.745947', '', '', 182, 1, 0),
-	(1250, '', 'Matchbox', 'Matchbox packet', 0, NULL, 1, '2023-11-20 20:17:47.790012', '2023-11-20 20:17:47.794017', '', '', 208, 1, 0),
-	(1251, '', 'Tropical Heat Ginger Spice', 'Tropical Heat Ginger Spice 45g', 0, NULL, 1, '2023-11-20 20:17:47.923318', '2023-11-20 20:17:47.926319', '', '', 186, 1, 0),
-	(1252, '', 'Tropical Sweets', 'Tropical Sweets piece(s)', 0, NULL, 1, '2023-11-20 20:17:48.012248', '2023-11-20 20:17:48.012248', '', '', 201, 1, 0),
-	(1253, '', 'Patco Sweets', 'Patco Sweets piece(s)', 0, NULL, 1, '2023-11-20 20:17:48.067803', '2023-11-20 20:17:48.069803', '', '', 201, 1, 0),
-	(1254, '', 'Koo (Kenya Cuffy)', 'Koo (Kenya Cuffy) piece(s)', 0, NULL, 1, '2023-11-20 20:17:48.097353', '2023-11-20 20:17:48.097353', '', '', 201, 1, 0),
-	(1255, '', 'Cowboy Cooking Fat', 'Cowboy Cooking Fat 1kg', 0, NULL, 1, '2023-11-20 20:17:48.146073', '2023-11-20 20:17:48.146073', '', '', 168, 1, 0),
-	(1256, '', 'Omena', 'Omena 1', 0, NULL, 1, '2023-11-20 20:17:48.351891', '2023-11-20 20:17:48.353892', '', '', 210, 1, 0),
-	(1257, '', 'Potatoes', 'Potatoes 1', 0, NULL, 1, '2023-11-20 20:17:48.485385', '2023-11-20 20:17:48.486386', '', '', 210, 1, 0),
-	(1258, '', 'Ham/Shoulder/Belly/Picnic', 'Ham/Shoulder/Belly/Picnic 1kg', 0, NULL, 1, '2023-11-20 20:17:48.567384', '2023-11-20 20:17:48.569389', '', '', 210, 1, 0),
-	(1259, NULL, 'Ordinary Cuts', 'Ordinary Cuts 1kg', 0, NULL, 1, '2023-11-20 20:17:48.000000', '2023-11-27 19:55:13.601773', NULL, NULL, 210, 1, 0),
-	(1260, NULL, 'Pork - Ribs/Chops', 'Pork - Ribs/Chops 1kg', 0, NULL, 1, '2023-11-20 20:17:48.000000', '2023-11-27 19:54:55.002682', NULL, NULL, 211, 1, 0),
-	(1261, NULL, 'Bar Soap 123', 'Bar soap', 0, 0, 1, '2023-11-27 20:27:53.000000', '2023-11-27 20:43:15.806508', NULL, NULL, 166, 1, 0);
+-- Dumping data for table bengomall.products: ~129 rows (approximately)
+INSERT IGNORE INTO `products` (`id`, `model`, `title`, `description`, `unit_price`, `retail_price`, `discount_price`, `status`, `date_added`, `date_updated`, `weight`, `dimentions`, `maincategory_id`, `vendor_id`) VALUES
+	(1133, '', 'Honey', 'Honey 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:39.828573', '2023-11-20 20:17:39.829832', '', '', 163, 1),
+	(1134, '', 'Blue band', 'Blue band 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:39.878121', '2023-11-20 20:17:39.878121', '', '', 164, 1),
+	(1135, '', 'Broilers', 'Broilers 1.2kg', 0, 0, NULL, 1, '2023-11-20 20:17:39.911992', '2023-11-20 20:17:39.925540', '', '', 165, 1),
+	(1136, '', 'Omo', 'Omo 40g', 0, 0, NULL, 1, '2023-11-20 20:17:40.027736', '2023-11-20 20:17:40.027736', '', '', 166, 1),
+	(1137, '', 'Sausages', 'Sausages 500g', 0, 0, NULL, 1, '2023-11-20 20:17:40.141110', '2023-11-20 20:17:40.143109', '', '', 167, 1),
+	(1138, '', 'Fresh Fri Cooking Oil', 'Fresh Fri Cooking Oil 1 Liter', 0, 0, NULL, 1, '2023-11-20 20:17:40.174483', '2023-11-20 20:17:40.177487', '', '', 168, 1),
+	(1139, '', 'Kimbo Cooking Fat', 'Kimbo Cooking Fat 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:40.216801', '2023-11-20 20:17:40.217801', '', '', 168, 1),
+	(1140, '', 'Arimis', 'Arimis 50g', 0, 0, NULL, 1, '2023-11-20 20:17:40.329133', '2023-11-20 20:17:40.329133', '', '', 169, 1),
+	(1141, '', 'Kamande', 'Kamande piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:40.381098', '2023-11-20 20:17:40.381098', '', '', 170, 1),
+	(1142, '', 'Msafi Powder', 'Msafi Powder 1kg White', 0, 0, NULL, 1, '2023-11-20 20:17:40.444355', '2023-11-20 20:17:40.444355', '', '', 166, 1),
+	(1143, '', 'Sugar', 'Sugar 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:40.549458', '2023-11-20 20:17:40.550456', '', '', 171, 1),
+	(1144, '', 'Unga Chapati - Ajab', 'Unga Chapati - Ajab 2kg', 0, 0, NULL, 1, '2023-11-20 20:17:40.596177', '2023-11-20 20:17:40.598178', '', '', 172, 1),
+	(1145, '', 'Premium Pishori Rice', 'Premium Pishori Rice 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:40.647532', '2023-11-20 20:17:40.647532', '', '', 173, 1),
+	(1146, '', 'Soda', 'Soda 2 Liters', 0, 0, NULL, 1, '2023-11-20 20:17:40.762741', '2023-11-20 20:17:40.762741', '', '', 174, 1),
+	(1147, '', 'Savannah Cocopine Juice', 'Savannah Cocopine Juice 1 Liter', 0, 0, NULL, 1, '2023-11-20 20:17:40.807501', '2023-11-20 20:17:40.810501', '', '', 174, 1),
+	(1148, '', 'Yellow Beans', 'Yellow Beans piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:40.848556', '2023-11-20 20:17:40.848556', '', '', 170, 1),
+	(1149, '', 'Unga Ugali - Pembe', 'Unga Ugali - Pembe 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:40.896240', '2023-11-20 20:17:40.898615', '', '', 172, 1),
+	(1150, '', 'Quencher Pineapple Juice', 'Quencher Pineapple Juice 1 Liter', 0, 0, NULL, 1, '2023-11-20 20:17:40.947395', '2023-11-20 20:17:40.949394', '', '', 174, 1),
+	(1151, '', 'Yoghurt', 'Yoghurt piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:41.070835', '2023-11-20 20:17:41.072835', '', '', 175, 1),
+	(1152, '', 'Msafi Bar Soap', 'Msafi Bar Soap 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:41.096288', '2023-11-20 20:17:41.096288', '', '', 166, 1),
+	(1153, '', 'Premium Imported Rice', 'Premium Imported Rice 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:41.157812', '2023-11-20 20:17:41.159820', '', '', 173, 1),
+	(1154, '', 'Sunlight Powder Yellow', 'Sunlight Powder Yellow 400g', 0, 0, NULL, 1, '2023-11-20 20:17:41.243052', '2023-11-20 20:17:41.247216', '', '', 166, 1),
+	(1155, '', 'Ndengu', 'Ndengu Makueni', 0, 0, NULL, 1, '2023-11-20 20:17:41.421878', '2023-11-20 20:17:41.422879', '', '', 170, 1),
+	(1156, '', 'Mala', 'Mala 1', 0, 0, NULL, 1, '2023-11-20 20:17:41.447541', '2023-11-20 20:17:41.463769', '', '', 175, 1),
+	(1157, '', 'Water', 'Water 5 Liters', 0, 0, NULL, 1, '2023-11-20 20:17:41.498056', '2023-11-20 20:17:41.498056', '', '', 174, 1),
+	(1158, '', 'Bread', 'Bread piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:41.582442', '2023-11-20 20:17:41.582442', '', '', 176, 1),
+	(1159, '', 'Mandazi', 'Mandazi piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:41.623060', '2023-11-20 20:17:41.626487', '', '', 177, 1),
+	(1160, '', 'Ngumu', 'Ngumu piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:41.668705', '2023-11-20 20:17:41.669704', '', '', 178, 1),
+	(1161, '', 'Always', 'Always Pink', 0, 0, NULL, 1, '2023-11-20 20:17:41.697549', '2023-11-20 20:17:41.697549', '', '', 179, 1),
+	(1162, '', 'Biryani Rice', 'Biryani Rice 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:41.802025', '2023-11-20 20:17:41.804025', '', '', 173, 1),
+	(1163, '', 'Bella Baby Wipes', 'Bella Baby Wipes 80 wipes', 0, 0, NULL, 1, '2023-11-20 20:17:41.931730', '2023-11-20 20:17:41.932732', '', '', 180, 1),
+	(1164, '', 'Afia Juice Mixed Fruit', 'Afia Juice Mixed Fruit 500ml', 0, 0, NULL, 1, '2023-11-20 20:17:42.096557', '2023-11-20 20:17:42.096557', '', '', 174, 1),
+	(1165, '', 'Fresh Milk - Njugunas', 'Fresh Milk - Njugunas piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.151259', '2023-11-20 20:17:42.153258', '', '', 175, 1),
+	(1166, '', 'Softcare Pads', 'Softcare Pads piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.202527', '2023-11-20 20:17:42.203530', '', '', 179, 1),
+	(1167, '', 'Colgate', 'Colgate 15g', 0, 0, NULL, 1, '2023-11-20 20:17:42.253809', '2023-11-20 20:17:42.255808', '', '', 181, 1),
+	(1168, '', 'Spaghetti Daawat Green', 'Spaghetti Daawat Green 400g', 0, 0, NULL, 1, '2023-11-20 20:17:42.339314', '2023-11-20 20:17:42.342320', '', '', 167, 1),
+	(1169, '', 'Jam ', 'Jam  100g', 0, 0, NULL, 1, '2023-11-20 20:17:42.428607', '2023-11-20 20:17:42.428607', '', '', 164, 1),
+	(1170, '', 'Fresh Milk - Kabete Dairies', 'Fresh Milk - Kabete Dairies piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.496557', '2023-11-20 20:17:42.496557', '', '', 175, 1),
+	(1171, '', 'Predator', 'Predator piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.550959', '2023-11-20 20:17:42.551961', '', '', 174, 1),
+	(1172, '', 'Nuvita Break Time Biscuits', 'Nuvita Break Time Biscuits piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.647157', '2023-11-20 20:17:42.647157', '', '', 182, 1),
+	(1173, '', 'Champ Mango Colada', 'Champ Mango Colada 300ml', 0, 0, NULL, 1, '2023-11-20 20:17:42.712913', '2023-11-20 20:17:42.712913', '', '', 174, 1),
+	(1174, '', 'Kinangop Milk', 'Kinangop Milk 500ml', 0, 0, NULL, 1, '2023-11-20 20:17:42.762397', '2023-11-20 20:17:42.762397', '', '', 175, 1),
+	(1175, '', 'Baking Powder', 'Baking Powder piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.801993', '2023-11-20 20:17:42.803994', '', '', 183, 1),
+	(1176, '', 'Ketepa Tangawizi Tea Leaves', 'Ketepa Tangawizi Tea Leaves 100g', 0, 0, NULL, 1, '2023-11-20 20:17:42.847158', '2023-11-20 20:17:42.847158', '', '', 184, 1),
+	(1177, '', 'Crisps Assorted', 'Crisps Assorted 50g', 0, 0, NULL, 1, '2023-11-20 20:17:42.912384', '2023-11-20 20:17:42.912384', '', '', 185, 1),
+	(1178, '', 'Cheese & Onion', 'Cheese & Onion piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.949279', '2023-11-20 20:17:42.951279', '', '', 186, 1),
+	(1179, '', 'Chilli Lemon', 'Chilli Lemon piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:42.995756', '2023-11-20 20:17:42.998751', '', '', 186, 1),
+	(1180, '', 'Salt & Vinegar', 'Salt & Vinegar piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:43.029950', '2023-11-20 20:17:43.029950', '', '', 186, 1),
+	(1181, '', 'Tomato', 'Tomato piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:43.075204', '2023-11-20 20:17:43.078213', '', '', 186, 1),
+	(1182, '', 'Afia Juice Mango', 'Afia Juice Mango 200ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.112018', '2023-11-20 20:17:43.112018', '', '', 174, 1),
+	(1183, '', 'Minute Maid Mango', 'Minute Maid Mango 280ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.157623', '2023-11-20 20:17:43.160629', '', '', 174, 1),
+	(1184, '', 'Jooz Orange Juice', 'Jooz Orange Juice 300ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.229240', '2023-11-20 20:17:43.229240', '', '', 174, 1),
+	(1185, '', 'Juo Orange Juice', 'Juo Orange Juice 300ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.266660', '2023-11-20 20:17:43.267661', '', '', 174, 1),
+	(1186, '', 'Juo Ukwaju Juice', 'Juo Ukwaju Juice 300ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.296168', '2023-11-20 20:17:43.307594', '', '', 174, 1),
+	(1187, '', 'Afia Mixed Fruit Juice', 'Afia Mixed Fruit Juice 200ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.341243', '2023-11-20 20:17:43.345244', '', '', 174, 1),
+	(1188, '', 'Novida', 'Novida 350ml', 0, 0, NULL, 1, '2023-11-20 20:17:43.429900', '2023-11-20 20:17:43.429900', '', '', 174, 1),
+	(1189, '', 'Ketepa Tea Leaves', 'Ketepa Tea Leaves 100g', 0, 0, NULL, 1, '2023-11-20 20:17:43.578980', '2023-11-20 20:17:43.578980', '', '', 184, 1),
+	(1190, '', 'Eden Tea', 'Eden Tea 15g', 0, 0, NULL, 1, '2023-11-20 20:17:43.617951', '2023-11-20 20:17:43.619950', '', '', 184, 1),
+	(1191, '', 'White Wash 175g', 'White Wash 175g Soaps', 0, 0, NULL, 1, '2023-11-20 20:17:43.690945', '2023-11-20 20:17:43.694945', '', '', 166, 1),
+	(1192, '', 'Indomie Jumbo Chicken', 'Indomie Jumbo Chicken 120g', 0, 0, NULL, 1, '2023-11-20 20:17:43.735221', '2023-11-20 20:17:43.736220', '', '', 167, 1),
+	(1193, '', 'Festive Classic Bread', 'Festive Classic Bread piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:43.777688', '2023-11-20 20:17:43.777688', '', '', 176, 1),
+	(1194, '', 'Sossi', 'Sossi 80g', 0, 0, NULL, 1, '2023-11-20 20:17:43.829109', '2023-11-20 20:17:43.829109', '', '', 167, 1),
+	(1195, '', 'Toilet Paper  ', 'Toilet Paper   Bella', 0, 0, NULL, 1, '2023-11-20 20:17:43.866579', '2023-11-20 20:17:43.868578', '', '', 180, 1),
+	(1196, '', 'Royco', 'Royco Satchet 8g', 0, 0, NULL, 1, '2023-11-20 20:17:43.948913', '2023-11-20 20:17:43.949913', '', '', 187, 1),
+	(1197, '', 'Biscuits', 'Biscuits 1', 0, 0, NULL, 1, '2023-11-20 20:17:43.998439', '2023-11-20 20:17:43.999437', '', '', 182, 1),
+	(1198, '', 'Mosquito Coil', 'Mosquito Coil Red', 0, 0, NULL, 1, '2023-11-20 20:17:44.096896', '2023-11-20 20:17:44.096896', '', '', 188, 1),
+	(1199, '', 'Cabbage', 'Cabbage piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:44.146455', '2023-11-20 20:17:44.148455', '', '', 189, 1),
+	(1200, '', 'Toothbrush', 'Toothbrush piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:44.222886', '2023-11-20 20:17:44.226196', '', '', 190, 1),
+	(1201, '', 'Golden Marie Biscuits', 'Golden Marie Biscuits 85g', 0, 0, NULL, 1, '2023-11-20 20:17:44.265540', '2023-11-20 20:17:44.267541', '', '', 182, 1),
+	(1202, '', 'Weetabix Single Serve', 'Weetabix Single Serve 37g', 0, 0, NULL, 1, '2023-11-20 20:17:44.311638', '2023-11-20 20:17:44.311638', '', '', 191, 1),
+	(1203, '', 'Sunlight Powder', 'Sunlight Powder 80g', 0, 0, NULL, 1, '2023-11-20 20:17:44.451169', '2023-11-20 20:17:44.451169', '', '', 166, 1),
+	(1204, '', 'Sumoja Milking Jelly', 'Sumoja Milking Jelly 50g', 0, 0, NULL, 1, '2023-11-20 20:17:44.533513', '2023-11-20 20:17:44.534513', '', '', 169, 1),
+	(1205, '', 'Eno', 'Eno 350ml ', 0, 0, NULL, 1, '2023-11-20 20:17:44.562256', '2023-11-20 20:17:44.579784', '', '', 164, 1),
+	(1206, '', 'Menthol King', 'Menthol King 350ml ', 0, 0, NULL, 1, '2023-11-20 20:17:44.613167', '2023-11-20 20:17:44.613167', '', '', 192, 1),
+	(1207, '', 'Family (packet) Nuvita Orange', 'Family (packet) Nuvita Orange 75g', 0, 0, NULL, 1, '2023-11-20 20:17:44.650506', '2023-11-20 20:17:44.652507', '', '', 193, 1),
+	(1208, '', 'Family (packet) Nuvita Green', 'Family (packet) Nuvita Green 75g', 0, 0, NULL, 1, '2023-11-20 20:17:44.678692', '2023-11-20 20:17:44.678692', '', '', 194, 1),
+	(1209, '', 'Nescafe', 'Nescafe Satchet', 0, 0, NULL, 1, '2023-11-20 20:17:44.724501', '2023-11-20 20:17:44.727504', '', '', 195, 1),
+	(1210, '', 'Bic Razor', 'Bic Razor piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:44.799647', '2023-11-20 20:17:44.800649', '', '', 196, 1),
+	(1211, '', 'Kensalt Salt', 'Kensalt Salt 200g', 0, 0, NULL, 1, '2023-11-20 20:17:44.830703', '2023-11-20 20:17:44.830703', '', '', 186, 1),
+	(1212, '', 'Cigarettes ', 'Cigarettes  Switch', 0, 0, NULL, 1, '2023-11-20 20:17:44.917757', '2023-11-20 20:17:44.918745', '', '', 197, 1),
+	(1213, '', 'Twiga Exercise Book', 'Twiga Exercise Book 48 pages Ruled', 0, 0, NULL, 1, '2023-11-20 20:17:44.966745', '2023-11-20 20:17:44.967746', '', '', 196, 1),
+	(1214, '', 'Oreo Biscuits', 'Oreo Biscuits 27.6g', 0, 0, NULL, 1, '2023-11-20 20:17:45.051012', '2023-11-20 20:17:45.053011', '', '', 182, 1),
+	(1215, '', 'Kahawa No. 1', 'Kahawa No. 1 34g', 0, 0, NULL, 1, '2023-11-20 20:17:45.095523', '2023-11-20 20:17:45.095523', '', '', 195, 1),
+	(1216, '', 'Softcare Diaper Gold', 'Softcare Diaper Gold Large', 0, 0, NULL, 1, '2023-11-20 20:17:45.213183', '2023-11-20 20:17:45.213183', '', '', 180, 1),
+	(1217, '', 'Sawa Bath Soap', 'Sawa Bath Soap Original', 0, 0, NULL, 1, '2023-11-20 20:17:45.294365', '2023-11-20 20:17:45.294365', '', '', 166, 1),
+	(1218, '', 'Yego Marie Biscuits', 'Yego Marie Biscuits 60g', 0, 0, NULL, 1, '2023-11-20 20:17:45.629955', '2023-11-20 20:17:45.629955', '', '', 198, 1),
+	(1219, '', 'Eggs', 'Eggs 1', 0, 0, NULL, 1, '2023-11-20 20:17:45.678945', '2023-11-20 20:17:45.678945', '', '', 165, 1),
+	(1220, '', 'Glucose Excel', 'Glucose Excel 15g', 0, 0, NULL, 1, '2023-11-20 20:17:45.760696', '2023-11-20 20:17:45.763616', '', '', 199, 1),
+	(1221, '', 'KDF', 'KDF piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:45.827921', '2023-11-20 20:17:45.827921', '', '', 200, 1),
+	(1222, '', 'Sunlight Bar Soap', 'Sunlight Bar Soap 175g', 0, 0, NULL, 1, '2023-11-20 20:17:45.964841', '2023-11-20 20:17:45.966842', '', '', 166, 1),
+	(1223, '', 'Panado Extra', 'Panado Extra Pair', 0, 0, NULL, 1, '2023-11-20 20:17:46.045737', '2023-11-20 20:17:46.047736', '', '', 192, 1),
+	(1224, '', 'Tuliza', 'Tuliza Pair', 0, 0, NULL, 1, '2023-11-20 20:17:46.079672', '2023-11-20 20:17:46.096721', '', '', 192, 1),
+	(1225, '', 'Sukuma Wiki', 'Sukuma Wiki piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:46.134404', '2023-11-20 20:17:46.135405', '', '', 189, 1),
+	(1226, '', 'Spinach', 'Spinach piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:46.180840', '2023-11-20 20:17:46.182840', '', '', 189, 1),
+	(1227, '', 'Cocoa Raha', 'Cocoa Raha 10g', 0, 0, NULL, 1, '2023-11-20 20:17:46.255137', '2023-11-20 20:17:46.257136', '', '', 184, 1),
+	(1228, '', 'Sweets', 'Sweets Lollypop Small', 0, 0, NULL, 1, '2023-11-20 20:17:46.295001', '2023-11-20 20:17:46.295001', '', '', 201, 1),
+	(1229, '', 'Bites', 'Bites piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:46.413489', '2023-11-20 20:17:46.413489', '', '', 202, 1),
+	(1230, '', 'Drinking Chocolate Raha', 'Drinking Chocolate Raha 20g', 0, 0, NULL, 1, '2023-11-20 20:17:46.465939', '2023-11-20 20:17:46.466942', '', '', 195, 1),
+	(1231, '', 'Ringoz', 'Ringoz piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:46.513374', '2023-11-20 20:17:46.515368', '', '', 203, 1),
+	(1232, '', 'Ariel', 'Ariel 20g', 0, 0, NULL, 1, '2023-11-20 20:17:46.577499', '2023-11-20 20:17:46.580497', '', '', 166, 1),
+	(1233, '', 'Candles Sumo', 'Candles Sumo 96 pieces', 0, 0, NULL, 1, '2023-11-20 20:17:46.825352', '2023-11-20 20:17:46.840691', '', '', 204, 1),
+	(1234, '', 'Ariel Powder Soap', 'Ariel Powder Soap 20g', 0, 0, NULL, 1, '2023-11-20 20:17:46.882888', '2023-11-20 20:17:46.882888', '', '', 166, 1),
+	(1235, '', 'Tropical Heat Curry Powder', 'Tropical Heat Curry Powder 10g', 0, 0, NULL, 1, '2023-11-20 20:17:46.944532', '2023-11-20 20:17:46.944532', '', '', 186, 1),
+	(1236, '', 'Gilda Conc Tomato Paste', 'Gilda Conc Tomato Paste piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:46.996827', '2023-11-20 20:17:46.998825', '', '', 186, 1),
+	(1237, '', 'Safari Puffs', 'Safari Puffs piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:47.044828', '2023-11-20 20:17:47.047441', '', '', 205, 1),
+	(1238, '', 'Steelwool', 'Steelwool 15g', 0, 0, NULL, 1, '2023-11-20 20:17:47.080611', '2023-11-20 20:17:47.080611', '', '', 206, 1),
+	(1239, '', 'Dormans', 'Dormans Satchet', 0, 0, NULL, 1, '2023-11-20 20:17:47.120114', '2023-11-20 20:17:47.122115', '', '', 192, 1),
+	(1240, '', 'Hedex', 'Hedex Pair', 0, 0, NULL, 1, '2023-11-20 20:17:47.161693', '2023-11-20 20:17:47.161693', '', '', 192, 1),
+	(1241, '', 'Maramoja', 'Maramoja Pair', 0, 0, NULL, 1, '2023-11-20 20:17:47.200070', '2023-11-20 20:17:47.202069', '', '', 192, 1),
+	(1242, '', 'Panadol', 'Panadol Pair', 0, 0, NULL, 1, '2023-11-20 20:17:47.227865', '2023-11-20 20:17:47.227865', '', '', 192, 1),
+	(1243, '', 'Big Daddy', 'Big Daddy packet', 0, 0, NULL, 1, '2023-11-20 20:17:47.318390', '2023-11-20 20:17:47.319389', '', '', 201, 1),
+	(1244, '', 'Lollypop Big Giant', 'Lollypop Big Giant packet', 0, 0, NULL, 1, '2023-11-20 20:17:47.364561', '2023-11-20 20:17:47.364561', '', '', 201, 1),
+	(1245, '', 'Fresh', 'Fresh Assorted', 0, 0, NULL, 1, '2023-11-20 20:17:47.404909', '2023-11-20 20:17:47.405907', '', '', 207, 1),
+	(1246, '', 'PK Chewing Gum', 'PK Chewing Gum piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:47.591025', '2023-11-20 20:17:47.595023', '', '', 207, 1),
+	(1247, '', 'Golden Ginger Nut', 'Golden Ginger Nut packet', 0, 0, NULL, 1, '2023-11-20 20:17:47.672691', '2023-11-20 20:17:47.677091', '', '', 182, 1),
+	(1248, '', 'Nuvita Ginger', 'Nuvita Ginger packet', 0, 0, NULL, 1, '2023-11-20 20:17:47.715758', '2023-11-20 20:17:47.716757', '', '', 182, 1),
+	(1249, '', 'Nuvita Milk', 'Nuvita Milk packet', 0, 0, NULL, 1, '2023-11-20 20:17:47.745947', '2023-11-20 20:17:47.745947', '', '', 182, 1),
+	(1250, '', 'Matchbox', 'Matchbox packet', 0, 0, NULL, 1, '2023-11-20 20:17:47.790012', '2023-11-20 20:17:47.794017', '', '', 208, 1),
+	(1251, '', 'Tropical Heat Ginger Spice', 'Tropical Heat Ginger Spice 45g', 0, 0, NULL, 1, '2023-11-20 20:17:47.923318', '2023-11-20 20:17:47.926319', '', '', 186, 1),
+	(1252, '', 'Tropical Sweets', 'Tropical Sweets piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:48.012248', '2023-11-20 20:17:48.012248', '', '', 201, 1),
+	(1253, '', 'Patco Sweets', 'Patco Sweets piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:48.067803', '2023-11-20 20:17:48.069803', '', '', 201, 1),
+	(1254, '', 'Koo (Kenya Cuffy)', 'Koo (Kenya Cuffy) piece(s)', 0, 0, NULL, 1, '2023-11-20 20:17:48.097353', '2023-11-20 20:17:48.097353', '', '', 201, 1),
+	(1255, '', 'Cowboy Cooking Fat', 'Cowboy Cooking Fat 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:48.146073', '2023-11-20 20:17:48.146073', '', '', 168, 1),
+	(1256, '', 'Omena', 'Omena 1', 0, 0, NULL, 1, '2023-11-20 20:17:48.351891', '2023-11-20 20:17:48.353892', '', '', 210, 1),
+	(1257, '', 'Potatoes', 'Potatoes 1', 0, 0, NULL, 1, '2023-11-20 20:17:48.485385', '2023-11-20 20:17:48.486386', '', '', 210, 1),
+	(1258, '', 'Ham/Shoulder/Belly/Picnic', 'Ham/Shoulder/Belly/Picnic 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:48.567384', '2023-11-20 20:17:48.569389', '', '', 210, 1),
+	(1259, NULL, 'Ordinary Cuts', 'Ordinary Cuts 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:48.000000', '2023-11-27 19:55:13.601773', NULL, NULL, 210, 1),
+	(1260, NULL, 'Pork - Ribs/Chops', 'Pork - Ribs/Chops 1kg', 0, 0, NULL, 1, '2023-11-20 20:17:48.000000', '2023-11-27 19:54:55.002682', NULL, NULL, 211, 1),
+	(1261, NULL, 'Bar Soap 123', 'Bar soap', 0, 0, 0, 1, '2023-11-27 20:27:53.000000', '2023-11-27 20:43:15.806508', NULL, NULL, 166, 1);
 
 -- Dumping structure for table bengomall.product_productcolor
 CREATE TABLE IF NOT EXISTS `product_productcolor` (
@@ -7452,7 +8393,7 @@ CREATE TABLE IF NOT EXISTS `product_productcolor` (
   PRIMARY KEY (`id`),
   KEY `product_productcolor_product_id_27d9e077_fk_products_id` (`product_id`),
   CONSTRAINT `product_productcolor_product_id_27d9e077_fk_products_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table bengomall.product_productcolor: ~0 rows (approximately)
 
@@ -7461,91 +8402,91 @@ CREATE TABLE IF NOT EXISTS `product_productsize` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `size` varchar(10) NOT NULL,
   `unit_price` double NOT NULL,
+  `retail_price` double NOT NULL,
   `unit_discount_price` double DEFAULT NULL,
   `product_id` bigint NOT NULL,
   `unit_id` bigint DEFAULT NULL,
-  `retail_price` double NOT NULL,
   PRIMARY KEY (`id`),
   KEY `product_productsize_product_id_203a1d51_fk_products_id` (`product_id`),
-  KEY `product_productsize_unit_id_6bae970c_fk_product_unit_id` (`unit_id`),
+  KEY `product_productsize_unit_id_6bae970c_fk_units_id` (`unit_id`),
   CONSTRAINT `product_productsize_product_id_203a1d51_fk_products_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
-  CONSTRAINT `product_productsize_unit_id_6bae970c_fk_product_unit_id` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`)
+  CONSTRAINT `product_productsize_unit_id_6bae970c_fk_units_id` FOREIGN KEY (`unit_id`) REFERENCES `units` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=770 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.product_productsize: ~70 rows (approximately)
-INSERT IGNORE INTO `product_productsize` (`id`, `size`, `unit_price`, `unit_discount_price`, `product_id`, `unit_id`, `retail_price`) VALUES
-	(696, '1', 3, 0, 1133, 52, 800),
-	(697, '12', 10, 0, 1135, 52, 600),
-	(698, '250', 10, 0, 1135, 53, 150),
-	(699, '500', 10, 0, 1135, 53, 300),
-	(700, '40', 12, 0, 1136, 53, 20),
-	(701, '80', 12, 0, 1136, 53, 35),
-	(702, '1', 3, 0, 1138, 54, 310),
-	(703, '300', 5, 0, 1133, 53, 300),
-	(704, '50', 6, 0, 1140, 53, 45),
-	(705, '', 5, 0, 1141, 55, 260),
-	(706, '2', 12, 0, 1144, 52, 210),
-	(707, '2', 6, 0, 1146, 56, 260),
-	(708, '400', 6, 0, 1154, 53, 160),
-	(709, '500', 12, 0, 1138, 57, 160),
-	(710, '', 5, 0, 1155, 58, 260),
-	(711, '1', 30, 0, 1156, 59, 160),
-	(712, '5', 4, 0, 1157, 56, 260),
-	(713, '125', 12, 0, 1146, 56, 260),
-	(714, '', 6, 0, 1161, 60, 80),
-	(715, '80', 5, 0, 1163, 61, 130),
-	(716, '15', 12, 0, 1167, 53, 40),
-	(717, '35', 12, 0, 1167, 53, 75),
-	(718, '100', 6, 0, 1134, 53, 75),
-	(719, '300', 12, 0, 1173, 57, 30),
-	(720, '200', 12, 0, 1182, 57, 40),
-	(721, '280', 12, 0, 1183, 57, 40),
-	(722, '350', 12, 0, 1188, 57, 50),
-	(723, '', 12, 0, 1191, 62, 50),
-	(724, '120', 20, 0, 1192, 53, 50),
-	(725, '', 10, 0, 1195, 63, 45),
-	(726, '8', 40, 0, 1196, 64, 10),
-	(727, '', 10, 0, 1198, 65, 50),
-	(728, '50', 5, 0, 1152, 66, 50),
-	(729, '85', 24, 0, 1201, 53, 30),
-	(730, '37', 12, 0, 1202, 53, 35),
-	(731, '40', 6, 0, 1152, 66, 40),
-	(732, '75', 36, 0, 1207, 53, 30),
-	(733, '', 6, 0, 1209, 64, 25),
-	(734, '200', 40, 0, 1211, 53, 15),
-	(735, '', 20, 0, 1212, 67, 25),
-	(736, '48', 12, 0, 1213, 68, 25),
-	(737, '276', 36, 0, 1214, 53, 20),
-	(738, '34', 12, 0, 1215, 53, 20),
-	(739, '', 40, 0, 1216, 69, 25),
-	(740, '', 6, 0, 1217, 70, 75),
-	(741, '', 6, 0, 1217, 71, 75),
-	(742, '', 42, 0, 1216, 72, 25),
-	(743, '', 42, 0, 1216, 73, 25),
-	(744, '150', 24, 0, 1150, 57, 20),
-	(745, '60', 36, 0, 1218, 53, 20),
-	(746, '13', 150, 0, 1135, 52, 15),
-	(747, '', 20, 0, 1212, 74, 20),
-	(748, '', 20, 0, 1212, 75, 20),
-	(749, '175', 12, 0, 1222, 53, 75),
-	(750, '', 50, 0, 1223, 76, 20),
-	(751, '10', 12, 0, 1227, 53, 15),
-	(752, '', 50, 0, 1228, 77, 5),
-	(753, '20', 12, 0, 1230, 53, 15),
-	(754, '30', 12, 0, 1232, 53, 35),
-	(755, '', 20, 0, 1212, 78, 10),
-	(756, '', 20, 0, 1212, 79, 10),
-	(757, '96', 96, 0, 1233, 80, 10),
-	(758, '', 50, 0, 1243, 81, 10),
-	(759, '', 50, 0, 1245, 82, 5),
-	(760, '', 50, 0, 1245, 83, 5),
-	(761, '', 50, 0, 1245, 84, 5),
-	(762, '', 50, 0, 1245, 85, 5),
-	(763, '', 40, 0, 1196, 86, 5),
-	(764, '8', 40, 0, 1196, 53, 10),
-	(765, '45', 40, 0, 1251, 53, 70),
-	(766, '6', 300, 0, 1261, 87, 500),
-	(769, '100', 20, 0, 1261, 52, 30);
+-- Dumping data for table bengomall.product_productsize: ~72 rows (approximately)
+INSERT IGNORE INTO `product_productsize` (`id`, `size`, `unit_price`, `retail_price`, `unit_discount_price`, `product_id`, `unit_id`) VALUES
+	(696, '1', 3, 800, 0, 1133, 52),
+	(697, '12', 10, 600, 0, 1135, 52),
+	(698, '250', 10, 150, 0, 1135, 53),
+	(699, '500', 10, 300, 0, 1135, 53),
+	(700, '40', 12, 20, 0, 1136, 53),
+	(701, '80', 12, 35, 0, 1136, 53),
+	(702, '1', 3, 310, 0, 1138, 54),
+	(703, '300', 5, 300, 0, 1133, 53),
+	(704, '50', 6, 45, 0, 1140, 53),
+	(705, '', 5, 260, 0, 1141, 55),
+	(706, '2', 12, 210, 0, 1144, 52),
+	(707, '2', 6, 260, 0, 1146, 56),
+	(708, '400', 6, 160, 0, 1154, 53),
+	(709, '500', 12, 160, 0, 1138, 57),
+	(710, '', 5, 260, 0, 1155, 58),
+	(711, '1', 30, 160, 0, 1156, 59),
+	(712, '5', 4, 260, 0, 1157, 56),
+	(713, '125', 12, 260, 0, 1146, 56),
+	(714, '', 6, 80, 0, 1161, 60),
+	(715, '80', 5, 130, 0, 1163, 61),
+	(716, '15', 12, 40, 0, 1167, 53),
+	(717, '35', 12, 75, 0, 1167, 53),
+	(718, '100', 6, 75, 0, 1134, 53),
+	(719, '300', 12, 30, 0, 1173, 57),
+	(720, '200', 12, 40, 0, 1182, 57),
+	(721, '280', 12, 40, 0, 1183, 57),
+	(722, '350', 12, 50, 0, 1188, 57),
+	(723, '', 12, 50, 0, 1191, 62),
+	(724, '120', 20, 50, 0, 1192, 53),
+	(725, '', 10, 45, 0, 1195, 63),
+	(726, '8', 40, 10, 0, 1196, 64),
+	(727, '', 10, 50, 0, 1198, 65),
+	(728, '50', 5, 50, 0, 1152, 66),
+	(729, '85', 24, 30, 0, 1201, 53),
+	(730, '37', 12, 35, 0, 1202, 53),
+	(731, '40', 6, 40, 0, 1152, 66),
+	(732, '75', 36, 30, 0, 1207, 53),
+	(733, '', 6, 25, 0, 1209, 64),
+	(734, '200', 40, 15, 0, 1211, 53),
+	(735, '', 20, 25, 0, 1212, 67),
+	(736, '48', 12, 25, 0, 1213, 68),
+	(737, '276', 36, 20, 0, 1214, 53),
+	(738, '34', 12, 20, 0, 1215, 53),
+	(739, '', 40, 25, 0, 1216, 69),
+	(740, '', 6, 75, 0, 1217, 70),
+	(741, '', 6, 75, 0, 1217, 71),
+	(742, '', 42, 25, 0, 1216, 72),
+	(743, '', 42, 25, 0, 1216, 73),
+	(744, '150', 24, 20, 0, 1150, 57),
+	(745, '60', 36, 20, 0, 1218, 53),
+	(746, '13', 150, 15, 0, 1135, 52),
+	(747, '', 20, 20, 0, 1212, 74),
+	(748, '', 20, 20, 0, 1212, 75),
+	(749, '175', 12, 75, 0, 1222, 53),
+	(750, '', 50, 20, 0, 1223, 76),
+	(751, '10', 12, 15, 0, 1227, 53),
+	(752, '', 50, 5, 0, 1228, 77),
+	(753, '20', 12, 15, 0, 1230, 53),
+	(754, '30', 12, 35, 0, 1232, 53),
+	(755, '', 20, 10, 0, 1212, 78),
+	(756, '', 20, 10, 0, 1212, 79),
+	(757, '96', 96, 10, 0, 1233, 80),
+	(758, '', 50, 10, 0, 1243, 81),
+	(759, '', 50, 5, 0, 1245, 82),
+	(760, '', 50, 5, 0, 1245, 83),
+	(761, '', 50, 5, 0, 1245, 84),
+	(762, '', 50, 5, 0, 1245, 85),
+	(763, '', 40, 5, 0, 1196, 86),
+	(764, '8', 40, 10, 0, 1196, 53),
+	(765, '45', 40, 70, 0, 1251, 53),
+	(766, '6', 300, 500, 0, 1261, 87),
+	(769, '100', 20, 30, 0, 1261, 52);
 
 -- Dumping structure for table bengomall.reviews
 CREATE TABLE IF NOT EXISTS `reviews` (
@@ -7582,8 +8523,8 @@ CREATE TABLE IF NOT EXISTS `sales` (
   `sales_type` varchar(20) NOT NULL,
   `attendant_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `sales_attendant_id_5c78f7fa_fk_human_resource_employee_id` (`attendant_id`),
-  CONSTRAINT `sales_attendant_id_5c78f7fa_fk_human_resource_employee_id` FOREIGN KEY (`attendant_id`) REFERENCES `human_resource_employee` (`id`)
+  KEY `sales_attendant_id_5c78f7fa_fk_employees_id` (`attendant_id`),
+  CONSTRAINT `sales_attendant_id_5c78f7fa_fk_employees_id` FOREIGN KEY (`attendant_id`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table bengomall.sales: ~8 rows (approximately)
@@ -7614,7 +8555,7 @@ CREATE TABLE IF NOT EXISTS `salesitems` (
   CONSTRAINT `salesitems_stock_id_2ea2efea_fk_inventory_id` FOREIGN KEY (`stock_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.salesitems: ~7 rows (approximately)
+-- Dumping data for table bengomall.salesitems: ~8 rows (approximately)
 INSERT IGNORE INTO `salesitems` (`id`, `retail_price`, `qty`, `total`, `date_added`, `date_updated`, `sale_id`, `stock_id`) VALUES
 	(36, 800, 1, 800, '2023-11-21 15:00:30.461928', '2023-11-21 15:00:30.461928', 33, 2123),
 	(37, 150, 1, 150, '2023-11-21 19:59:50.922230', '2023-11-21 19:59:50.922230', 34, 2125),
@@ -7650,13 +8591,16 @@ CREATE TABLE IF NOT EXISTS `savedproducts` (
 CREATE TABLE IF NOT EXISTS `storefront` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `flash_sale_end_date` datetime(6) NOT NULL,
+  `slider_image` varchar(100) DEFAULT NULL,
   `slider_text` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.storefront: ~1 rows (approximately)
-INSERT IGNORE INTO `storefront` (`id`, `flash_sale_end_date`, `slider_text`) VALUES
-	(1, '2024-04-30 18:25:44.000000', 'Upto 60% + Extra 10%');
+-- Dumping data for table bengomall.storefront: ~3 rows (approximately)
+INSERT IGNORE INTO `storefront` (`id`, `flash_sale_end_date`, `slider_image`, `slider_text`) VALUES
+	(1, '2023-12-19 18:58:01.000000', 'store/slider/tisho1-removebg-preview_IM72Ka0.png', 'Special brand T-Shirts'),
+	(2, '2023-12-19 18:58:01.000000', 'store/slider/yogis_banner_JYlyRcC.png', 'Yogis Special'),
+	(3, '2023-12-19 18:58:01.000000', 'store/slider/mug_3yLhKoP.png', 'Branded mugs');
 
 -- Dumping structure for table bengomall.storefront_slider_products
 CREATE TABLE IF NOT EXISTS `storefront_slider_products` (
@@ -7809,6 +8753,46 @@ INSERT IGNORE INTO `subcategories` (`id`, `name`, `display_image`, `status`) VAL
 	(503, 'Ordinary', '', 1),
 	(504, 'Pork', '', 1);
 
+-- Dumping structure for table bengomall.suppliers
+CREATE TABLE IF NOT EXISTS `suppliers` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  CONSTRAINT `suppliers_user_id_4773a628_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.suppliers: ~0 rows (approximately)
+
+-- Dumping structure for table bengomall.suppliers_address
+CREATE TABLE IF NOT EXISTS `suppliers_address` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `supplier_id` bigint NOT NULL,
+  `businessaddress_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `suppliers_address_supplier_id_businessaddress_id_379110f8_uniq` (`supplier_id`,`businessaddress_id`),
+  KEY `suppliers_address_businessaddress_id_538c535f_fk_business_` (`businessaddress_id`),
+  CONSTRAINT `suppliers_address_businessaddress_id_538c535f_fk_business_` FOREIGN KEY (`businessaddress_id`) REFERENCES `business_addresses` (`id`),
+  CONSTRAINT `suppliers_address_supplier_id_a561e6ea_fk_suppliers_id` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.suppliers_address: ~0 rows (approximately)
+
+-- Dumping structure for table bengomall.suppliers_delivery_regions
+CREATE TABLE IF NOT EXISTS `suppliers_delivery_regions` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `supplier_id` bigint NOT NULL,
+  `deliveryregions_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `suppliers_delivery_regio_supplier_id_deliveryregi_6c4faa3d_uniq` (`supplier_id`,`deliveryregions_id`),
+  KEY `suppliers_delivery_r_deliveryregions_id_9c66f9b0_fk_delivery_` (`deliveryregions_id`),
+  CONSTRAINT `suppliers_delivery_r_deliveryregions_id_9c66f9b0_fk_delivery_` FOREIGN KEY (`deliveryregions_id`) REFERENCES `delivery_regions` (`id`),
+  CONSTRAINT `suppliers_delivery_regions_supplier_id_0412a4ce_fk_suppliers_id` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table bengomall.suppliers_delivery_regions: ~0 rows (approximately)
+
 -- Dumping structure for table bengomall.transactions
 CREATE TABLE IF NOT EXISTS `transactions` (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -7820,7 +8804,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.transactions: ~4 rows (approximately)
+-- Dumping data for table bengomall.transactions: ~7 rows (approximately)
 INSERT IGNORE INTO `transactions` (`id`, `orderid`, `checkoutid`, `timestamp`, `secret`, `status`) VALUES
 	(1, 'D9wlBQ1a1Y', 'ws_CO_04112023182056376743793901', '20231104181448', 'MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMxMTA0MTgxNDQ4', 'pending'),
 	(2, 'JV2LT2jNTa', 'ws_CO_12112023125400398743793901', '20231112123433', 'MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMxMTEyMTIzNDMz', 'pending'),
@@ -7838,7 +8822,7 @@ CREATE TABLE IF NOT EXISTS `units` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.units: ~35 rows (approximately)
+-- Dumping data for table bengomall.units: ~36 rows (approximately)
 INSERT IGNORE INTO `units` (`id`, `unit_title`, `unit_symbol`) VALUES
 	(52, 'kg', 'kg'),
 	(53, 'g', 'g'),
@@ -7887,7 +8871,7 @@ CREATE TABLE IF NOT EXISTS `vendors` (
   CONSTRAINT `vendors_user_id_f1608816_fk_authmanagement_myuser_id` FOREIGN KEY (`user_id`) REFERENCES `authmanagement_myuser` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.vendors: ~0 rows (approximately)
+-- Dumping data for table bengomall.vendors: ~1 rows (approximately)
 INSERT IGNORE INTO `vendors` (`id`, `name`, `user_id`) VALUES
 	(1, 'YOGIS DELIGHT', 13);
 
@@ -7898,12 +8882,12 @@ CREATE TABLE IF NOT EXISTS `vendors_address` (
   `businessaddress_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `vendors_address_vendor_id_businessaddress_id_a98e4228_uniq` (`vendor_id`,`businessaddress_id`),
-  KEY `vendors_address_businessaddress_id_e6032002_fk_human_res` (`businessaddress_id`),
-  CONSTRAINT `vendors_address_businessaddress_id_e6032002_fk_human_res` FOREIGN KEY (`businessaddress_id`) REFERENCES `human_resource_businessaddress` (`id`),
+  KEY `vendors_address_businessaddress_id_e6032002_fk_business_` (`businessaddress_id`),
+  CONSTRAINT `vendors_address_businessaddress_id_e6032002_fk_business_` FOREIGN KEY (`businessaddress_id`) REFERENCES `business_addresses` (`id`),
   CONSTRAINT `vendors_address_vendor_id_d9864080_fk_vendors_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table bengomall.vendors_address: ~0 rows (approximately)
+-- Dumping data for table bengomall.vendors_address: ~1 rows (approximately)
 INSERT IGNORE INTO `vendors_address` (`id`, `vendor_id`, `businessaddress_id`) VALUES
 	(1, 1, 1);
 
@@ -7914,8 +8898,8 @@ CREATE TABLE IF NOT EXISTS `vendors_customers` (
   `customer_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `vendors_customers_vendor_id_customer_id_d19f6919_uniq` (`vendor_id`,`customer_id`),
-  KEY `vendors_customers_customer_id_7654b102_fk_human_res` (`customer_id`),
-  CONSTRAINT `vendors_customers_customer_id_7654b102_fk_human_res` FOREIGN KEY (`customer_id`) REFERENCES `human_resource_customer` (`id`),
+  KEY `vendors_customers_customer_id_7654b102_fk_customers_id` (`customer_id`),
+  CONSTRAINT `vendors_customers_customer_id_7654b102_fk_customers_id` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
   CONSTRAINT `vendors_customers_vendor_id_a7694f51_fk_vendors_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -7928,8 +8912,8 @@ CREATE TABLE IF NOT EXISTS `vendors_delivery_addresses` (
   `deliveryregions_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `vendors_delivery_address_vendor_id_deliveryregion_794f97ed_uniq` (`vendor_id`,`deliveryregions_id`),
-  KEY `vendors_delivery_add_deliveryregions_id_b75d9443_fk_human_res` (`deliveryregions_id`),
-  CONSTRAINT `vendors_delivery_add_deliveryregions_id_b75d9443_fk_human_res` FOREIGN KEY (`deliveryregions_id`) REFERENCES `human_resource_deliveryregions` (`id`),
+  KEY `vendors_delivery_add_deliveryregions_id_b75d9443_fk_delivery_` (`deliveryregions_id`),
+  CONSTRAINT `vendors_delivery_add_deliveryregions_id_b75d9443_fk_delivery_` FOREIGN KEY (`deliveryregions_id`) REFERENCES `delivery_regions` (`id`),
   CONSTRAINT `vendors_delivery_addresses_vendor_id_f3477d8a_fk_vendors_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -7945,8 +8929,8 @@ CREATE TABLE IF NOT EXISTS `vendors_employees` (
   `employee_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `vendors_employees_vendor_id_employee_id_55c5cc93_uniq` (`vendor_id`,`employee_id`),
-  KEY `vendors_employees_employee_id_8052d074_fk_human_res` (`employee_id`),
-  CONSTRAINT `vendors_employees_employee_id_8052d074_fk_human_res` FOREIGN KEY (`employee_id`) REFERENCES `human_resource_employee` (`id`),
+  KEY `vendors_employees_employee_id_8052d074_fk_employees_id` (`employee_id`),
+  CONSTRAINT `vendors_employees_employee_id_8052d074_fk_employees_id` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
   CONSTRAINT `vendors_employees_vendor_id_ef60080b_fk_vendors_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -7959,8 +8943,8 @@ CREATE TABLE IF NOT EXISTS `vendors_suppliers` (
   `supplier_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `vendors_suppliers_vendor_id_supplier_id_a970267f_uniq` (`vendor_id`,`supplier_id`),
-  KEY `vendors_suppliers_supplier_id_4fdd1949_fk_human_res` (`supplier_id`),
-  CONSTRAINT `vendors_suppliers_supplier_id_4fdd1949_fk_human_res` FOREIGN KEY (`supplier_id`) REFERENCES `human_resource_supplier` (`id`),
+  KEY `vendors_suppliers_supplier_id_4fdd1949_fk_suppliers_id` (`supplier_id`),
+  CONSTRAINT `vendors_suppliers_supplier_id_4fdd1949_fk_suppliers_id` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`),
   CONSTRAINT `vendors_suppliers_vendor_id_bb2cde3a_fk_vendors_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
